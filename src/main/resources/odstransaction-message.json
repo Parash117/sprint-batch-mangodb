@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "crn": "1ACASA",
+    "totalPointsEarned": 200,
+    "bonusCode": "B1",
+    "cycleDate": "01/25/2022",
+    "processedDate": "01/25/2022",
+    "destinationSystem": "FISERV"
+  },
+  {
+    "id": 2,
+    "crn": "1ACASA",
+    "totalPointsEarned": 300,
+    "bonusCode": "B2",
+    "cycleDate": "01/25/2022",
+    "processedDate": "01/25/2022",
+    "destinationSystem": "FISERV"
+  },
+  {
+    "id": 3,
+    "crn": "1ACASA",
+    "totalPointsEarned": 250,
+    "bonusCode": "B1",
+    "cycleDate": "01/25/2022",
+    "processedDate": "01/26/2022",
+    "destinationSystem": "CHOICE"
+  },
+  {
+    "id": 4,
+    "crn": "1ACASA",
+    "totalPointsEarned": 300,
+    "bonusCode": "B2",
+    "cycleDate": "01/25/2022",
+    "processedDate": "01/26/2022",
+    "destinationSystem": "CHOICE"
+  },
+  {
+    "id": 5,
+    "crn": "1ACASA",
+    "totalPointsEarned": 300,
+    "bonusCode": "B2",
+    "cycleDate": "01/25/2022",
+    "processedDate": "01/26/2022",
+    "destinationSystem": "CHOICE"
+  },
+  {
+    "id": 6,
+    "crn": "1ACASA",
+    "totalPointsEarned": 300,
+    "bonusCode": "B2",
+    "cycleDate": "01/25/2022",
+    "processedDate": "01/26/2022",
+    "destinationSystem": "CHOICE"
+  }
+]

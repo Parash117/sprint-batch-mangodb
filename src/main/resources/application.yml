@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://mongouser:mangopassword@testdb.wgarjwv.mongodb.net/?retryWrites=true&w=majority
+      database: testdb
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: embedded

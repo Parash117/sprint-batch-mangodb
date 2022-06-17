@@ -57,20 +57,21 @@ public class BatchConfig {
     private AtomicInteger batchRunCounter = new AtomicInteger(0);
 
     @Bean
-    public JsonItemReader<ODSTransactionMessage> reader(){
+    public JsonItemReader<ODSTransactionMessage> reader() {
         return new JsonItemReaderBuilder<ODSTransactionMessage>()
                 .jsonObjectReader(new JacksonJsonObjectReader<>(ODSTransactionMessage.class))
                 .resource(new ClassPathResource("odstransaction-message.json"))
                 .name("ODSTransactionReader")
                 .build();
     }
+
     @Bean
-    public ODSTransactionProcessor processor(){
+    public ODSTransactionProcessor processor() {
         return new ODSTransactionProcessor();
     }
 
     @Bean
-    public Step stepOne(){
+    public Step stepOne() {
         return stepBuilderFactory.get("stepOne")
                 .<ODSTransactionMessage, ODSTransactionMessage>chunk(20)
                 .reader(reader())
@@ -78,6 +79,7 @@ public class BatchConfig {
                 .writer(writer(mongoTemplate))
                 .build();
     }
+
     @Bean
     public Job importUserJob(JobCompletionListener listener, Step step1) {
         return jobBuilderFactory.get("importUserJob")
@@ -91,7 +93,8 @@ public class BatchConfig {
 
     @Bean
     public MongoItemWriter<ODSTransactionMessage> writer(MongoTemplate mongoTemplate) {
-            return new MongoItemWriterBuilder<ODSTransactionMessage>().template(mongoTemplate).collection("ODSTransactionMessage")
+        return new MongoItemWriterBuilder<ODSTransactionMessage>()
+                .template(mongoTemplate).collection("ODSTransactionMessage")
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.pgrg.springbatch.controller;
 
+import com.pgrg.springbatch.job.ODSTransactionJob;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -24,6 +25,9 @@ public class BatchController {
     @Autowired
     private Job job;
 
+    @Autowired
+    private ODSTransactionJob odsTransactionJob;
+
     @GetMapping(path = "/start") // Start batch process path
     public ResponseEntity<String> startBatch() {
         JobParameters Parameters = new JobParametersBuilder()
@@ -40,4 +44,19 @@ public class BatchController {
         return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
     }
 
+    @GetMapping(path = "/startv2") // Start batch process path
+    public ResponseEntity<String> startBatchv2() {
+        JobParameters Parameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+        try {
+            jobLauncher.run(odsTransactionJob.job(), Parameters);
+        } catch (JobExecutionAlreadyRunningException
+                | JobRestartException
+                | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
+    }
 }

@@ -10,6 +10,8 @@ public class ODSTransactionProcessor implements ItemProcessor<ODSTransactionMess
 
     @Override
     public ODSTransactionMessage process(final ODSTransactionMessage odsTransactionMessage) throws Exception {
+
+
         log.info("Transaction processed for {}", odsTransactionMessage.getId());
         return odsTransactionMessage;
     }

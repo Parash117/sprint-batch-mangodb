@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "crn": "1ACASA",
+    "transactionAmount": 2000,
+    "pointsEarned": 200,
+    "merchantID": 123,
+    "bonusCode": "B1",
+    "transactionPostedDate": "12/01/2022",
+    "transactionDate": "12/01/2022",
+    "cycledForFiserv": "Y",
+    "cycledForChoice": "Y"
+  },
+  {
+    "id": 2,
+    "crn": "1ACASA",
+    "transactionAmount": 2000,
+    "pointsEarned": 200,
+    "merchantID": 123,
+    "bonusCode": "B1",
+    "transactionPostedDate": "12/01/2022",
+    "transactionDate": "12/01/2022",
+    "cycledForFiserv": "Y",
+    "cycledForChoice": "Y"
+  },
+  {
+    "id": 3,
+    "crn": "1ACASA",
+    "transactionAmount": 3000,
+    "pointsEarned": 300,
+    "merchantID": 111,
+    "bonusCode": "B2",
+    "transactionPostedDate": "06/09/2022",
+    "transactionDate": "06/08/2022",
+    "cycledForFiserv": "Y",
+    "cycledForChoice": "N"
+  }
+]

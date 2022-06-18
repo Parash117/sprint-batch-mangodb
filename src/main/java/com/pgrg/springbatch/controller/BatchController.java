@@ -10,6 +10,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,6 @@ public class BatchController {
     private JobLauncher jobLauncher;
     @Autowired
     private Job job;
-
     @Autowired
     private ODSTransactionJob odsTransactionJob;
 
@@ -59,4 +59,11 @@ public class BatchController {
         }
         return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
     }
+
+
+//    @Autowired
+//    @Qualifier("odsTransactionJob")
+//    private Job odsJob;
+
+
 }

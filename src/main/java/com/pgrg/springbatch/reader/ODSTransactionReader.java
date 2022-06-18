@@ -1,6 +1,7 @@
 package com.pgrg.springbatch.reader;
 
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
+import com.pgrg.springbatch.entity.ODSTransactionRaw;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.NonTransientResourceException;
 import org.springframework.batch.item.ParseException;
@@ -12,13 +13,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
-@Component
 public class ODSTransactionReader  {
 
-    public JsonItemReader<ODSTransactionMessage> reader() {
-        return new JsonItemReaderBuilder<ODSTransactionMessage>()
-                .jsonObjectReader(new JacksonJsonObjectReader<>(ODSTransactionMessage.class))
-                .resource(new ClassPathResource("odstransaction-message.json"))
+    public JsonItemReader<ODSTransactionRaw> reader() {
+        return new JsonItemReaderBuilder<ODSTransactionRaw>()
+                .jsonObjectReader(new JacksonJsonObjectReader<>(ODSTransactionRaw.class))
+                .resource(new ClassPathResource("odsraw-data.json"))
                 .name("ODSTransactionReader")
                 .build();
     }

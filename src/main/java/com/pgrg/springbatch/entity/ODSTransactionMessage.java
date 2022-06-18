@@ -1,6 +1,7 @@
 package com.pgrg.springbatch.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -38,4 +39,17 @@ public class ODSTransactionMessage {
                 ", destinationSystem='" + destinationSystem + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof ODSTransactionMessage)) {
+            return false;
+        }
+        ODSTransactionMessage ods = (ODSTransactionMessage) obj;
+        return this.crn.equals(ods.crn);
+    }
+
 }

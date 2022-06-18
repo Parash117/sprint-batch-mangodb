@@ -1,9 +1,13 @@
 package com.pgrg.springbatch.config;
 
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
+import com.pgrg.springbatch.entity.ODSTransactionRaw;
 import com.pgrg.springbatch.listner.JobCompletionListener;
 import com.pgrg.springbatch.processor.ODSTransactionProcessor;
+import com.pgrg.springbatch.reader.ODSTransactionReader;
 import com.pgrg.springbatch.repo.ODSTxMsgRepo;
+import com.pgrg.springbatch.step.ODSTransactionStep;
+import com.pgrg.springbatch.writer.ODSItemWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -27,6 +31,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.support.ScheduledMethodRunnable;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -39,63 +44,56 @@ import java.util.concurrent.atomic.AtomicInteger;
 @EnableBatchProcessing
 public class BatchConfig {
 
-    @Autowired
-    public JobBuilderFactory jobBuilderFactory;
-    @Autowired
-    public StepBuilderFactory stepBuilderFactory;
-    @Autowired
-    private JobLauncher jobLauncher;
-    @Autowired
-    private JobCompletionListener jobCompletionNotificationListener;
-    @Autowired
-    private ODSTxMsgRepo odsTxMsgRepo;
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    private final Map<Object, ScheduledFuture<?>> scheduledTasks = new IdentityHashMap<>();
-    private AtomicBoolean enabled = new AtomicBoolean(true);
-    private AtomicInteger batchRunCounter = new AtomicInteger(0);
-
     @Bean
-    public JsonItemReader<ODSTransactionMessage> reader() {
-        return new JsonItemReaderBuilder<ODSTransactionMessage>()
-                .jsonObjectReader(new JacksonJsonObjectReader<>(ODSTransactionMessage.class))
-                .resource(new ClassPathResource("odstransaction-message.json"))
-                .name("ODSTransactionReader")
-                .build();
+    public ODSTransactionReader odsTransactionReader() {
+        return new ODSTransactionReader();
     }
 
     @Bean
-    public ODSTransactionProcessor processor() {
-        return new ODSTransactionProcessor();
+    public ODSTransactionStep odsTransactionStep(){
+        return new ODSTransactionStep();
     }
+    //    @Bean
+//    public JsonItemReader<ODSTransactionMessage> reader() {
+//        return new JsonItemReaderBuilder<ODSTransactionMessage>()
+//                .jsonObjectReader(new JacksonJsonObjectReader<>(ODSTransactionMessage.class))
+//                .resource(new ClassPathResource("odstransaction-message.json"))
+//                .name("ODSTransactionReader")
+//                .build();
+//    }
+//
+//    @Bean
+//    public ODSTransactionProcessor processor() {
+//        return new ODSTransactionProcessor();
+//    }
+//
+//    @Bean
+//    public Step stepOne() {
+//        return stepBuilderFactory.get("stepOne")
+//                .<ODSTransactionRaw, ODSTransactionMessage>chunk(20)
+//                .reader(reader())
+//                .processor(processor())
+//                .writer(writer(mongoTemplate))
+//                .build();
+//    }
+//
+//    @Bean
+//    public Job importUserJob(JobCompletionListener listener, Step step1) {
+//        return jobBuilderFactory.get("importUserJob")
+//                .incrementer(new RunIdIncrementer())
+//                .listener(listener)
+////                .flow(step1)
+////                .end()
+//                .start(step1)
+//                .build();
+//    }
+//
+//    @Bean
+//    public MongoItemWriter<ODSTransactionMessage> writer(MongoTemplate mongoTemplate) {
+//        return new MongoItemWriterBuilder<ODSTransactionMessage>()
+//                .template(mongoTemplate).collection("ODSTransactionMessage")
+//                .build();
+//    }
 
-    @Bean
-    public Step stepOne() {
-        return stepBuilderFactory.get("stepOne")
-                .<ODSTransactionMessage, ODSTransactionMessage>chunk(20)
-                .reader(reader())
-                .processor(processor())
-                .writer(writer(mongoTemplate))
-                .build();
-    }
-
-    @Bean
-    public Job importUserJob(JobCompletionListener listener, Step step1) {
-        return jobBuilderFactory.get("importUserJob")
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-//                .flow(step1)
-//                .end()
-                .start(step1)
-                .build();
-    }
-
-    @Bean
-    public MongoItemWriter<ODSTransactionMessage> writer(MongoTemplate mongoTemplate) {
-        return new MongoItemWriterBuilder<ODSTransactionMessage>()
-                .template(mongoTemplate).collection("ODSTransactionMessage")
-                .build();
-    }
 
 }

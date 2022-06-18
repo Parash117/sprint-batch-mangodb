@@ -23,12 +23,12 @@ public class BatchController {
 
     @Autowired
     private JobLauncher jobLauncher;
-    @Autowired
-    private Job job;
+//    @Autowired
+//    private Job job;
     @Autowired
     private ODSTransactionJob odsTransactionJob;
 
-    @GetMapping(path = "/start") // Start batch process path
+    /*@GetMapping(path = "/start") // Start batch process path
     public ResponseEntity<String> startBatch() {
         JobParameters Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
@@ -42,7 +42,7 @@ public class BatchController {
             e.printStackTrace();
         }
         return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
-    }
+    }*/
 
     @GetMapping(path = "/startv2") // Start batch process path
     public ResponseEntity<String> startBatchv2() {

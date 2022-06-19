@@ -1,7 +1,6 @@
 package com.pgrg.springbatch.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Getter
@@ -9,8 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("ods_transaction_fiserv")
-public class ODSTransactionMessage {
+@Document("ods_transaction_choice")
+public class ODSTransactionMessageForChoice {
+
     private Long uid;
 
     private Long id;
@@ -45,11 +45,10 @@ public class ODSTransactionMessage {
         if (obj == this) {
             return true;
         }
-        if (!(obj instanceof ODSTransactionMessage)) {
+        if (!(obj instanceof ODSTransactionMessageForChoice)) {
             return false;
         }
-        ODSTransactionMessage ods = (ODSTransactionMessage) obj;
+        ODSTransactionMessageForChoice ods = (ODSTransactionMessageForChoice) obj;
         return this.crn.equals(ods.crn);
     }
-
 }

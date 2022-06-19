@@ -7,16 +7,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Slf4j
 @Component
 public class ODSTransactionProcessor implements ItemProcessor<ODSTransactionRaw, ODSTransactionMessage> {
 
     @Override
     public ODSTransactionMessage process(final ODSTransactionRaw ods) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
                 .crn(ods.getCrn())
                 .bonusCode(ods.getBonusCode())
-                .cycleDate(ods.getCycleDate())
+                .cycleDate(dateFormat.format(new Date()))
                 .totalPointsEarned(ods.getPointsEarned())
                 .processedDate(ods.getTransactionPostedDate())
                 .build();

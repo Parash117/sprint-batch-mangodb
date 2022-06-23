@@ -4,6 +4,8 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -17,7 +19,7 @@ public class ODSTransactionMessage {
 
     private String crn;
 
-    private Double totalPointsEarned;
+    private BigDecimal totalPointsEarned;
 
     private String bonusCode;
 
@@ -26,6 +28,10 @@ public class ODSTransactionMessage {
     private String processedDate;
 
     private String destinationSystem;
+
+    private String cycledForFiserv;
+
+    private String cycledForChoice;
 
     @Override
     public String toString() {

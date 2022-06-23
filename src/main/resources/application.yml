@@ -1,3 +1,4 @@
+
 spring:
   data:
     mongodb:
@@ -8,3 +9,5 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: embedded
+server:
+  port: 8081

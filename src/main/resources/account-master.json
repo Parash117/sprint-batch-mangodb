@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "emAccountNumber": "500000000000001",
+    "transactionAmount": 2000,
+    "merchantID": 123,
+    "bonus": [
+      {
+        "bonusCode": "2022CH0001",
+        "choiceCategoryCd": "CH01",
+        "pointsEarned": 200
+      },
+      {
+        "bonusCode": "2022CH0001",
+        "choiceCategoryCd": "CH02",
+        "pointsEarned": 100
+      }
+    ],
+    "transactionPostedDate": "06/10/2022",
+    "transactionDate": "06/12/2022",
+    "cycledForFiserv": "Y",
+    "cycledForChoice": "Y"
+  },
+  {
+    "id": 2,
+    "emAccountNumber": "500000000000001",
+    "transactionAmount": 2000,
+    "merchantID": 123,
+    "bonus": [
+      {
+        "bonusCode": "2022CH0001",
+        "choiceCategoryCd": "CH01",
+        "pointsEarned": 200
+      }
+    ],
+    "transactionPostedDate": "06/15/2022",
+    "transactionDate": "06/17/2022",
+    "cycledForFiserv": "Y",
+    "cycledForChoice": "Y"
+  },
+  {
+    "id": 3,
+    "emAccountNumber": "500000000000002",
+    "transactionAmount": 3000,
+    "merchantID": 111,
+    "bonus": [
+      {
+        "bonusCode": "2022CH0002",
+        "choiceCategoryCd": "CH02",
+        "pointsEarned": 300
+      }
+    ],
+    "transactionPostedDate": "06/09/2022",
+    "transactionDate": "06/08/2022",
+    "cycledForFiserv": "Y",
+    "cycledForChoice": "N"
+  }
+]

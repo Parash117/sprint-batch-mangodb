@@ -3,6 +3,8 @@ package com.pgrg.springbatch.entity;
 import lombok.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -16,7 +18,7 @@ public class ODSTransactionRaw {
 
     private Double transactionAmount;
 
-    private Double pointsEarned;
+    private BigDecimal pointsEarned;
 
     private Integer merchantID;
 

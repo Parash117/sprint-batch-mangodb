@@ -7,7 +7,9 @@ import com.pgrg.springbatch.processor.ODSTransactionProcessor;
 import com.pgrg.springbatch.reader.ODSTransactionReader;
 import com.pgrg.springbatch.repo.ODSTxMsgRepo;
 import com.pgrg.springbatch.step.ODSTransactionStep;
+import com.pgrg.springbatch.step.RawDataToScoreStep;
 import com.pgrg.springbatch.writer.ODSItemWriter;
+import com.pgrg.springbatch.writer.RawToScoreWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -53,6 +55,12 @@ public class BatchConfig {
     public ODSTransactionStep odsTransactionStep(){
         return new ODSTransactionStep();
     }
+
+//    @Bean
+//    public RawDataToScoreStep rawDataToScoreStep(){
+//        return new RawDataToScoreStep();
+//    }
+
     //    @Bean
 //    public JsonItemReader<ODSTransactionMessage> reader() {
 //        return new JsonItemReaderBuilder<ODSTransactionMessage>()

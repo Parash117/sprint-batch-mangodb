@@ -8,8 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,18 +27,47 @@ public class RawToScoreWriter implements ItemWriter<ODSTransactionMessage> {
 
     @Override
     public void write(List<? extends ODSTransactionMessage> items) throws Exception {
-
         List<ODSTransactionMessage> odsItemWriterList = (List<ODSTransactionMessage>) items;
+        Map<String, BigDecimal> odsItemSumMap = odsItemWriterList.stream().collect(
+                Collectors.groupingBy(
+                        ODSTransactionMessage::getCrn,
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                ODSTransactionMessage::getTotalPointsEarned,
+                                BigDecimal::add
+                        )
+                )
+        );
+        List<ODSTransactionMessage> odsTransactionMessageList = new ArrayList<>();
         List<ODSTransactionMessage> odsItemWriterListForFiserv = new ArrayList<>();
         List<ODSTransactionMessageForChoice> odsItemWriterListForChoice = new ArrayList<>();
 
-        odsItemWriterListForFiserv = odsItemWriterList.stream().filter(x ->
-                "FISERV".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()) )
+        for (var entrySet : odsItemSumMap.entrySet()) {
+            odsTransactionMessageList.add(odsItemWriterList
+                    .stream()
+                    .filter(x ->
+                            x.getCrn().equalsIgnoreCase(entrySet.getKey())
+                    )
+                    .map(x -> ODSTransactionMessage.builder()
+                            .crn(x.getCrn())
+                            .processedDate(x.getProcessedDate())
+                            .cycleDate(x.getCycleDate())
+                            .destinationSystem(x.getDestinationSystem())
+                            .cycledForChoice(x.getCycledForChoice())
+                            .cycledForFiserv(x.getCycledForFiserv())
+                            .totalPointsEarned(entrySet.getValue())
+                            .build())
+                    .findAny().get()
+            );
+        }
+
+        odsItemWriterListForFiserv = odsTransactionMessageList.stream().filter(x ->
+                "FISERV".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()))
                 .collect(Collectors.toList());
 
-        odsItemWriterListForChoice = odsItemWriterList.stream().filter(x ->
-                "CHOICE".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()) )
-                .map(x-> ODSTransactionMessageForChoice.builder()
+        odsItemWriterListForChoice = odsTransactionMessageList.stream().filter(x ->
+                "CHOICE".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()))
+                .map(x -> ODSTransactionMessageForChoice.builder()
                         .crn(x.getCrn())
                         .bonusCode(x.getBonusCode())
                         .destinationSystem(x.getDestinationSystem())

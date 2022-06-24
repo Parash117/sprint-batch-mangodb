@@ -24,6 +24,8 @@ public class RawDataProcessor implements ItemProcessor<RawData, ODSTransactionMe
                 .crn(item.getEmAccountNumber())
                 .cycleDate(item.getTransactionDate())
                 .processedDate(item.getTransactionPostedDate())
+                .cycledForFiserv(item.getCycledForFiserv())
+                .cycledForChoice(item.getCycledForChoice())
                 .build();
         if("Y".equalsIgnoreCase(item.getCycledForChoice()) && "Y".equalsIgnoreCase(item.getCycledForFiserv())){
             odsTransactionMessage.setDestinationSystem("BOTH");

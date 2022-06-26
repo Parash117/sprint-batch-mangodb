@@ -1,5 +1,6 @@
 package com.pgrg.springbatch.controller;
 
+import com.pgrg.springbatch.job.CoBrandCycleChoiceJob;
 import com.pgrg.springbatch.job.CoBrandCycleJob;
 import com.pgrg.springbatch.service.RawJsonFileReader;
 import org.springframework.batch.core.JobParameters;
@@ -29,6 +30,9 @@ public class BatchController {
     @Autowired
     private CoBrandCycleJob coBrandCycleJob;
 
+    @Autowired
+    private CoBrandCycleChoiceJob coBrandCycleChoiceJob;
+
     @GetMapping(path = "/read-json") // Start batch process path
     public ResponseEntity<?> readJsonData() throws IOException {
         RawJsonFileReader rawJsonFileReader = new RawJsonFileReader();
@@ -44,6 +48,22 @@ public class BatchController {
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
         try {
             jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
+        } catch (JobExecutionAlreadyRunningException
+                | JobRestartException
+                | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/startv3") // Start batch process path
+    public ResponseEntity<String> startBatchv3() {
+        JobParameters Parameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+        try {
+            jobLauncher.run(coBrandCycleChoiceJob.jobForRawToScoreJob(), Parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException

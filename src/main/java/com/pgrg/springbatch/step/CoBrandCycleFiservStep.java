@@ -4,7 +4,7 @@ import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.entity.CoBrandAccountMaster;
 import com.pgrg.springbatch.processor.CoBrandCycleProcessor;
 import com.pgrg.springbatch.reader.CoBrandCycleReader;
-import com.pgrg.springbatch.writer.RawToScoreWriter;
+import com.pgrg.springbatch.writer.CoBrandCycleWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +22,15 @@ public class CoBrandCycleFiservStep {
     @Qualifier("raw-data-processor")
     private CoBrandCycleProcessor coBrandCycleProcessor;
     @Autowired
-    @Qualifier("raw-to-score-writer")
-    private RawToScoreWriter rawToScoreWriter;
+    @Qualifier("cobrand-fiserv-writer")
+    private CoBrandCycleWriter coBrandCycleWriter;
 
     public Step stepOne() {
         return stepBuilderFactory.get("stepOne")
                 .<CoBrandAccountMaster, ODSTransactionMessage>chunk(20)
                 .reader(coBrandCycleReader.reader())
                 .processor(coBrandCycleProcessor)
-                .writer(rawToScoreWriter)
+                .writer(coBrandCycleWriter)
                 .build();
     }
 

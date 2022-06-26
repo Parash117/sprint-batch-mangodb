@@ -10,25 +10,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CoBrandCycleJob {
+public class CoBrandCycleChoiceJob {
 
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
     @Autowired
-    private CoBrandCycleFiservStep coBrandCycleFiservStep;
+    private CoBrandCycleChoiceStep coBrandCycleChoiceStep;
     @Autowired
     private JobCompletionListener listener;
-//    @Autowired
-//    private CoBrandCycleChoiceStep coBrandCycleChoiceStep;
 
 //    @Bean
 //    @Qualifier("raw-to-score-job")
     public Job jobForRawToScoreJob() {
-        return jobBuilderFactory.get("importUserJob")
+        return jobBuilderFactory.get("coBrandJobForChoice")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
-                .start(coBrandCycleFiservStep.stepOne())
-//                .next(coBrandCycleChoiceStep.stepOneForChoice())
+                .start(coBrandCycleChoiceStep.stepOneForChoice())
                 .build();
     }
 

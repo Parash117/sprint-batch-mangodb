@@ -12,15 +12,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
-@Qualifier("raw-to-score-writer")
-public class RawToScoreWriter implements ItemWriter<ODSTransactionMessage> {
+@Qualifier("cobrand-choice-writer")
+public class CoBrandCycleChoiceWriter implements ItemWriter<ODSTransactionMessage> {
 
-    @Autowired
-    private BaseRepo<ODSTransactionMessage> baseRepo;
+//    @Autowired
+//    private BaseRepo<ODSTransactionMessage> baseRepo;
 
     @Autowired
     private BaseRepo<ODSTransactionMessageForChoice> baseRepo2;
@@ -28,6 +27,7 @@ public class RawToScoreWriter implements ItemWriter<ODSTransactionMessage> {
     @Override
     public void write(List<? extends ODSTransactionMessage> items) throws Exception {
         List<ODSTransactionMessage> odsItemWriterList = (List<ODSTransactionMessage>) items;
+        odsItemWriterList = odsItemWriterList.stream().filter(x-> x.getCrn()!=null).collect(Collectors.toList());
         Map<String, BigDecimal> odsItemSumMap = odsItemWriterList.stream().collect(
                 Collectors.groupingBy(
                         ODSTransactionMessage::getCrn,
@@ -39,7 +39,7 @@ public class RawToScoreWriter implements ItemWriter<ODSTransactionMessage> {
                 )
         );
         List<ODSTransactionMessage> odsTransactionMessageList = new ArrayList<>();
-        List<ODSTransactionMessage> odsItemWriterListForFiserv = new ArrayList<>();
+//        List<ODSTransactionMessage> odsItemWriterListForFiserv = new ArrayList<>();
         List<ODSTransactionMessageForChoice> odsItemWriterListForChoice = new ArrayList<>();
 
         for (var entrySet : odsItemSumMap.entrySet()) {
@@ -61,9 +61,9 @@ public class RawToScoreWriter implements ItemWriter<ODSTransactionMessage> {
             );
         }
 
-        odsItemWriterListForFiserv = odsTransactionMessageList.stream().filter(x ->
-                "FISERV".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()))
-                .collect(Collectors.toList());
+//        odsItemWriterListForFiserv = odsTransactionMessageList.stream().filter(x ->
+//                "FISERV".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()))
+//                .collect(Collectors.toList());
 
         odsItemWriterListForChoice = odsTransactionMessageList.stream().filter(x ->
                 "CHOICE".equalsIgnoreCase(x.getDestinationSystem()) || "BOTH".equalsIgnoreCase(x.getDestinationSystem()))
@@ -78,6 +78,6 @@ public class RawToScoreWriter implements ItemWriter<ODSTransactionMessage> {
                 .collect(Collectors.toList());
 
         baseRepo2.bulkInsert(odsItemWriterListForChoice, ODSTransactionMessageForChoice.class);
-        baseRepo.bulkInsert(odsItemWriterListForFiserv, ODSTransactionMessage.class);
+//        baseRepo.bulkInsert(odsItemWriterListForFiserv, ODSTransactionMessage.class);
     }
 }

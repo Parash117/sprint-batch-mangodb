@@ -21,7 +21,6 @@ public class JobCompletionListener extends JobExecutionListenerSupport {
     public void afterJob(JobExecution jobExecution) {
         if (jobExecution.getStatus() == BatchStatus.COMPLETED) {
             log.info("One job finished.");
-//            odsTxMsgRepo.findAll().stream().forEach(x-> System.out.println(x.toString()));
         }
     }
 }

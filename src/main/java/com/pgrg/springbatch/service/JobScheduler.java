@@ -16,12 +16,12 @@ import org.springframework.stereotype.Component;
 public class JobScheduler {
     @Autowired
     private JobLauncher jobLauncher;
-    @Autowired
+    /*@Autowired
     private Job job;
 
-    /** Scheduler should be turned on for repeated batch processing on some interval
+    *//** Scheduler should be turned on for repeated batch processing on some interval
      * http://www.cronmaker.com/?0 for corn required corn expressions
-     * */
+     * *//*
     @Scheduled(cron="0 0 0 25 1/1 ? *")
     public void startBatch() {
         JobParameters Parameters = new JobParametersBuilder()
@@ -34,5 +34,5 @@ public class JobScheduler {
                 | JobParametersInvalidException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

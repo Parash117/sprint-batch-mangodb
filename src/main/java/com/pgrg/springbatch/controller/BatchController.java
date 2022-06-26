@@ -1,10 +1,7 @@
 package com.pgrg.springbatch.controller;
 
-import com.pgrg.springbatch.job.ODSTransactionJob;
 import com.pgrg.springbatch.job.RawToScoreJob;
-import com.pgrg.springbatch.reader.RawDataReader;
 import com.pgrg.springbatch.service.RawJsonFileReader;
-import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -13,7 +10,6 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,46 +25,10 @@ public class BatchController {
 
     @Autowired
     private JobLauncher jobLauncher;
-//    @Autowired
-//    private Job job;
-    @Autowired
-    private ODSTransactionJob odsTransactionJob;
 
     @Autowired
     private RawToScoreJob rawToScoreJob;
 
-    /*@GetMapping(path = "/start") // Start batch process path
-    public ResponseEntity<String> startBatch() {
-        JobParameters Parameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
-        try {
-            jobLauncher.run(job, Parameters);
-        } catch (JobExecutionAlreadyRunningException
-                | JobRestartException
-                | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
-
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
-    }*/
-
-   /* @GetMapping(path = "/startv2") // Start batch process path
-    public ResponseEntity<String> startBatchv2() {
-        JobParameters Parameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
-        try {
-            jobLauncher.run(odsTransactionJob.job(), Parameters);
-        } catch (JobExecutionAlreadyRunningException
-                | JobRestartException
-                | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
-
-            e.printStackTrace();
-        }
-        return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
-    }
-*/
     @GetMapping(path = "/read-json") // Start batch process path
     public ResponseEntity<?> readJsonData() throws IOException {
         RawJsonFileReader rawJsonFileReader = new RawJsonFileReader();

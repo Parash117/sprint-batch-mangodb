@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RawData {
+public class CoBrandAccountMaster {
     private Long id;
 
     private String emAccountNumber;

@@ -1,7 +1,7 @@
 package com.pgrg.springbatch.processor;
 
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
-import com.pgrg.springbatch.entity.RawData;
+import com.pgrg.springbatch.entity.CoBrandAccountMaster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 @Slf4j
 @Component
 @Qualifier("raw-data-processor")
-public class RawDataProcessor implements ItemProcessor<RawData, ODSTransactionMessage> {
+public class CoBrandCycleProcessor implements ItemProcessor<CoBrandAccountMaster, ODSTransactionMessage> {
 
     @Override
-    public ODSTransactionMessage process(RawData item) throws Exception {
+    public ODSTransactionMessage process(CoBrandAccountMaster item) throws Exception {
         ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
                 .id(item.getId())
                 .totalPointsEarned(item.getBonus().stream()
@@ -27,14 +27,17 @@ public class RawDataProcessor implements ItemProcessor<RawData, ODSTransactionMe
                 .cycledForFiserv(item.getCycledForFiserv())
                 .cycledForChoice(item.getCycledForChoice())
                 .build();
-        if("Y".equalsIgnoreCase(item.getCycledForChoice()) && "Y".equalsIgnoreCase(item.getCycledForFiserv())){
+        if("N".equalsIgnoreCase(item.getCycledForChoice()) && "N".equalsIgnoreCase(item.getCycledForFiserv())){
             odsTransactionMessage.setDestinationSystem("BOTH");
         }
-        else if("Y".equalsIgnoreCase(item.getCycledForChoice())){
+        else if("N".equalsIgnoreCase(item.getCycledForFiserv())){
             odsTransactionMessage.setDestinationSystem("FISERV");
         }
-        else {
+        else if("N".equalsIgnoreCase(item.getCycledForChoice())){
             odsTransactionMessage.setDestinationSystem("CHOICE");
+        }
+        else {
+            return new ODSTransactionMessage();
         }
         log.info("Transaction processed for {}", item.getId());
         return odsTransactionMessage;

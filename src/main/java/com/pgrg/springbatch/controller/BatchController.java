@@ -1,6 +1,6 @@
 package com.pgrg.springbatch.controller;
 
-import com.pgrg.springbatch.job.RawToScoreJob;
+import com.pgrg.springbatch.job.CoBrandCycleJob;
 import com.pgrg.springbatch.service.RawJsonFileReader;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -27,7 +27,7 @@ public class BatchController {
     private JobLauncher jobLauncher;
 
     @Autowired
-    private RawToScoreJob rawToScoreJob;
+    private CoBrandCycleJob coBrandCycleJob;
 
     @GetMapping(path = "/read-json") // Start batch process path
     public ResponseEntity<?> readJsonData() throws IOException {
@@ -43,7 +43,7 @@ public class BatchController {
         JobParameters Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
         try {
-            jobLauncher.run(rawToScoreJob.jobForRawToScoreJob(), Parameters);
+            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException

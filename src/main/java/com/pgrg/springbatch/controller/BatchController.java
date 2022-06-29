@@ -43,9 +43,12 @@ public class BatchController {
     }
 
     @GetMapping(path = "/startv2") // Start batch process path
-    public ResponseEntity<String> startBatchv2() {
+    public ResponseEntity<String> startBatchv2() throws IOException {
+        RawJsonFileReader rawJsonFileReader = new RawJsonFileReader();
         JobParameters Parameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis()).toJobParameters();
+                .addLong("startAt", System.currentTimeMillis())
+                .addLong("cutoffDate", new Date().getTime())//rawJsonFileReader.getCutOffDate("src/main/resources/cut-off-dates.json").getTime())
+                .toJobParameters();
         try {
             jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
         } catch (JobExecutionAlreadyRunningException

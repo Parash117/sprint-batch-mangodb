@@ -2,6 +2,7 @@ package com.pgrg.springbatch.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
@@ -32,6 +33,9 @@ public class ODSTransactionMessage {
     private String cycledForFiserv;
 
     private String cycledForChoice;
+
+    @DBRef
+    private Audit audit;
 
     @Override
     public String toString() {

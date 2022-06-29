@@ -13,7 +13,7 @@ public class CoBrandCycleChoiceReader {
     public JsonItemReader<CoBrandAccountMaster> reader() {
         return new JsonItemReaderBuilder<CoBrandAccountMaster>()
                 .jsonObjectReader(new JacksonJsonObjectReader<>(CoBrandAccountMaster.class))
-                .resource(new ClassPathResource("account-master.json"))
+                .resource(new ClassPathResource("score-transaction.json"))
                 .name("ODSTransactionReader")
                 .build();
     }

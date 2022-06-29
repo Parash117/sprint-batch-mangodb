@@ -32,11 +32,11 @@ public class RawJsonFileReader {
     public Date getCutOffDate(String fileName) throws IOException {
         String json = new String(Files.readAllBytes(Path.of(fileName)));
         List<CutOffDate> cutOffDates = objectMapper.readValue(json, new TypeReference<List<CutOffDate>>() {});
-
-        List<String> emAccounts = cutOffDates.stream().filter(x->
-                DateUtils.isSameDay(x.getDate(), new Date())
-        ).map(x->
-                x.getEmAccountNumber()).distinct().collect(Collectors.toList());
+//
+//        List<String> emAccounts = cutOffDates.stream().filter(x->
+//                DateUtils.isSameDay(x.getDate(), new Date())
+//        ).map(x->
+//                x.getEmAccountNumber()).distinct().collect(Collectors.toList());
 
         return null;
     }

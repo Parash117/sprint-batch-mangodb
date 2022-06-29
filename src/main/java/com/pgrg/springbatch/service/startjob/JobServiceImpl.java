@@ -61,16 +61,16 @@ public class JobServiceImpl implements JobService{
                 .addLong("cutOffDate", dateInLong)
                 .addString("cycleCode", cutOffDateObject.getCycleCode())
                 .toJobParameters();
-//        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
-//        try {
-//            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
-//        } catch (JobExecutionAlreadyRunningException
-//                | JobRestartException
-//                | JobInstanceAlreadyCompleteException
-//                | JobParametersInvalidException e) {
-//
-//            e.printStackTrace();
-//        }
+        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
+        try {
+            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
+        } catch (JobExecutionAlreadyRunningException
+                | JobRestartException
+                | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+
+            e.printStackTrace();
+        }
     }
 
     @Override

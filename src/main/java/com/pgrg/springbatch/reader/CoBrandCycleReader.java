@@ -1,6 +1,13 @@
 package com.pgrg.springbatch.reader;
 
 import com.pgrg.springbatch.entity.CoBrandAccountMaster;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.listener.StepExecutionListenerSupport;
 import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
@@ -15,12 +22,11 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 
 @Component
-@Scope("step")
+@StepScope
+public class CoBrandCycleReader implements StepExecutionListener {
 
-public class CoBrandCycleReader {
-
-    @Value("#{jobParameters['cycleCode  ']}")
-    private Long cycleCode;
+    @Value("#{jobParameters['cycleCode']}")
+    private String cycleCode;
 
     private final MongoTemplate mongoTemplate;
 
@@ -47,4 +53,14 @@ public class CoBrandCycleReader {
         return reader;
     }
 
+    @Override
+    public void beforeStep(StepExecution stepExecution) {
+        JobParameters jobParameters = stepExecution.getJobParameters();
+        cycleCode = jobParameters.getString("cycleCode");
+    }
+
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return null;
+    }
 }

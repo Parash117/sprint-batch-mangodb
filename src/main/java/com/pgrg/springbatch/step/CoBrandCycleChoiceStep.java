@@ -1,13 +1,13 @@
 package com.pgrg.springbatch.step;
 
-import com.pgrg.springbatch.entity.CoBrandAccountMaster;
+import com.pgrg.springbatch.entity.AccountMaster;
+import com.pgrg.springbatch.entity.ODSTransactionMessageForChoice;
+import com.pgrg.springbatch.entity.TransactionDetails;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.processor.CoBrandCycleChoiceProcessor;
-import com.pgrg.springbatch.processor.CoBrandCycleProcessor;
 import com.pgrg.springbatch.reader.CoBrandCycleChoiceReader;
-import com.pgrg.springbatch.reader.CoBrandCycleReader;
+import com.pgrg.springbatch.reader.subreaders.AccountIdentifierReader;
 import com.pgrg.springbatch.writer.CoBrandCycleChoiceWriter;
-import com.pgrg.springbatch.writer.CoBrandCycleWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,8 @@ public class CoBrandCycleChoiceStep {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
     @Autowired
+    private AccountIdentifierReader accountIdentifierReader;
+    @Autowired
     private CoBrandCycleChoiceReader coBrandCycleChoiceReader;
     @Autowired
     @Qualifier("coBrand-cycle-processor")
@@ -28,10 +30,10 @@ public class CoBrandCycleChoiceStep {
     @Qualifier("cobrand-choice-writer")
     private CoBrandCycleChoiceWriter coBrandCycleChoiceWriter;
 
-    public Step stepOneForChoice() {
+    public Step stepOneForChoice(String cycleCode) {
         return stepBuilderFactory.get("stepOneForChoice")
-                .<CoBrandAccountMaster, ODSTransactionMessage>chunk(20)
-                .reader(coBrandCycleChoiceReader.reader())
+                .<AccountMaster, ODSTransactionMessageForChoice>chunk(20)
+                .reader(accountIdentifierReader.reader(cycleCode))
                 .processor(coBrandCycleChoiceProcessor)
                 .writer(coBrandCycleChoiceWriter)
                 .build();

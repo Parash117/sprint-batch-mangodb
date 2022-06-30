@@ -29,4 +29,10 @@ public class JobTriggerController {
         return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
     }
 
+    @GetMapping(path = "/acid") // Start batch process path
+    public ResponseEntity<String> accountId() throws ParseException {
+        jobService.startJobForAccountIdentifier();
+        return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
+    }
+
 }

@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 @Slf4j
 @Configuration
 @EnableBatchProcessing
-@StepScope
 public class BatchConfig extends DefaultBatchConfigurer {
 
     @Override

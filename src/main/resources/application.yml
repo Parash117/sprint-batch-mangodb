@@ -1,4 +1,3 @@
-
 spring:
   data:
     mongodb:
@@ -10,4 +9,4 @@ spring:
     jdbc:
       initialize-schema: embedded
 server:
-  port: 8081
+  port: 8085

@@ -1,7 +1,7 @@
 package com.pgrg.springbatch.step;
 
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
-import com.pgrg.springbatch.entity.CoBrandAccountMaster;
+import com.pgrg.springbatch.entity.TransactionDetails;
 import com.pgrg.springbatch.processor.CoBrandCycleProcessor;
 import com.pgrg.springbatch.reader.CoBrandCycleReader;
 import com.pgrg.springbatch.writer.CoBrandCycleWriter;
@@ -25,10 +25,10 @@ public class CoBrandCycleFiservStep {
     @Qualifier("cobrand-fiserv-writer")
     private CoBrandCycleWriter coBrandCycleWriter;
 
-    public Step stepOne() {
+    public Step stepOne(String param1) {
         return stepBuilderFactory.get("stepOne")
-                .<CoBrandAccountMaster, ODSTransactionMessage>chunk(20)
-                .reader(coBrandCycleReader.reader())
+                .<TransactionDetails, ODSTransactionMessage>chunk(20)
+                .reader(coBrandCycleReader.reader(param1))
                 .processor(coBrandCycleProcessor)
                 .writer(coBrandCycleWriter)
                 .build();

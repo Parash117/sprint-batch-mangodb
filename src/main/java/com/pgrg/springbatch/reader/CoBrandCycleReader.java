@@ -1,19 +1,10 @@
 package com.pgrg.springbatch.reader;
 
-import com.pgrg.springbatch.entity.CoBrandAccountMaster;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
-import org.springframework.batch.core.annotation.BeforeStep;
-import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.core.listener.StepExecutionListenerSupport;
+import com.pgrg.springbatch.entity.TransactionDetails;
 import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.batch.item.json.builder.JsonItemReaderBuilder;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -22,10 +13,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 
 @Component
-@StepScope
-public class CoBrandCycleReader implements StepExecutionListener {
+//@StepScope
+public class CoBrandCycleReader {
 
-    @Value("#{jobParameters['cycleCode']}")
+//    @Value("#{jobParameters['cycleCode']}")
     private String cycleCode;
 
     private final MongoTemplate mongoTemplate;
@@ -34,26 +25,26 @@ public class CoBrandCycleReader implements StepExecutionListener {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public JsonItemReader<CoBrandAccountMaster> reader() {
-        return new JsonItemReaderBuilder<CoBrandAccountMaster>()
-                .jsonObjectReader(new JacksonJsonObjectReader<>(CoBrandAccountMaster.class))
+    public JsonItemReader<TransactionDetails> reader(String cycleCode) {
+        return new JsonItemReaderBuilder<TransactionDetails>()
+                .jsonObjectReader(new JacksonJsonObjectReader<>(TransactionDetails.class))
                 .resource(new ClassPathResource("score-transaction.json"))
                 .name("ODSTransactionReader")
                 .build();
     }
 
-    public MongoItemReader<CoBrandAccountMaster> reader2() {
-        MongoItemReader<CoBrandAccountMaster> reader = new MongoItemReader<>();
+    public MongoItemReader<TransactionDetails> reader2(String cycleCode) {
+        MongoItemReader<TransactionDetails> reader = new MongoItemReader<>();
         reader.setTemplate(mongoTemplate);
         reader.setSort(new HashMap<String, Sort.Direction>() {{
             put("_id", Sort.Direction.DESC);
         }});
-        reader.setTargetType(CoBrandAccountMaster.class);
-        reader.setQuery("{}");
+        reader.setTargetType(TransactionDetails.class);
+        reader.setQuery("{\"cycleCode\": "+Long.valueOf(cycleCode)+" }");
         return reader;
     }
 
-    @Override
+    /*@Override
     public void beforeStep(StepExecution stepExecution) {
         JobParameters jobParameters = stepExecution.getJobParameters();
         cycleCode = jobParameters.getString("cycleCode");
@@ -62,5 +53,5 @@ public class CoBrandCycleReader implements StepExecutionListener {
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         return null;
-    }
+    }*/
 }

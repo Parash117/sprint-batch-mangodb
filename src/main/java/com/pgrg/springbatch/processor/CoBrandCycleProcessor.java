@@ -1,7 +1,7 @@
 package com.pgrg.springbatch.processor;
 
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
-import com.pgrg.springbatch.entity.CoBrandAccountMaster;
+import com.pgrg.springbatch.entity.TransactionDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @Slf4j
 @Component
 @Qualifier("raw-data-processor")
-public class CoBrandCycleProcessor implements ItemProcessor<CoBrandAccountMaster, ODSTransactionMessage> {
+public class CoBrandCycleProcessor implements ItemProcessor<TransactionDetails, ODSTransactionMessage> {
 
     private Long cutOffDate;
 
@@ -26,7 +26,7 @@ public class CoBrandCycleProcessor implements ItemProcessor<CoBrandAccountMaster
     }
 
     @Override
-    public ODSTransactionMessage process(CoBrandAccountMaster item) throws Exception {
+    public ODSTransactionMessage process(TransactionDetails item) throws Exception {
         ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
                 .id(item.getId())
                 .totalPointsEarned(item.getBonus().stream()

@@ -4,15 +4,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pgrg.springbatch.entity.CutOffDate;
-import com.pgrg.springbatch.entity.CoBrandAccountMaster;
-import org.apache.commons.lang3.time.DateUtils;
+import com.pgrg.springbatch.entity.TransactionDetails;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RawJsonFileReader {
     ObjectMapper objectMapper;
@@ -22,9 +20,9 @@ public class RawJsonFileReader {
         objectMapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
     }
 
-    public List<CoBrandAccountMaster> getAccountMaster(String fileName) throws IOException {
+    public List<TransactionDetails> getAccountMaster(String fileName) throws IOException {
         String json = new String(Files.readAllBytes(Path.of(fileName)));
-        List<CoBrandAccountMaster> object = objectMapper.readValue(json, new TypeReference<List<CoBrandAccountMaster>>() {
+        List<TransactionDetails> object = objectMapper.readValue(json, new TypeReference<List<TransactionDetails>>() {
         });
         return object;
     }

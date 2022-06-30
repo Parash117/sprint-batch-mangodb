@@ -21,11 +21,11 @@ public class CoBrandCycleChoiceJob {
 
 //    @Bean
 //    @Qualifier("raw-to-score-job")
-    public Job jobForRawToScoreJob() {
+    public Job jobForRawToScoreJob(String cycleCode) {
         return jobBuilderFactory.get("coBrandJobForChoice")
                 .incrementer(new RunIdIncrementer())
                 .listener(listener)
-                .start(coBrandCycleChoiceStep.stepOneForChoice())
+                .start(coBrandCycleChoiceStep.stepOneForChoice(cycleCode))
                 .build();
     }
 

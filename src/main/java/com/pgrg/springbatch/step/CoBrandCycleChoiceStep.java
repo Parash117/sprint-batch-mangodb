@@ -2,10 +2,7 @@ package com.pgrg.springbatch.step;
 
 import com.pgrg.springbatch.entity.AccountMaster;
 import com.pgrg.springbatch.entity.ODSTransactionMessageForChoice;
-import com.pgrg.springbatch.entity.TransactionDetails;
-import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.processor.CoBrandCycleChoiceProcessor;
-import com.pgrg.springbatch.reader.CoBrandCycleChoiceReader;
 import com.pgrg.springbatch.reader.subreaders.AccountIdentifierReader;
 import com.pgrg.springbatch.writer.CoBrandCycleChoiceWriter;
 import org.springframework.batch.core.Step;
@@ -21,8 +18,6 @@ public class CoBrandCycleChoiceStep {
     private StepBuilderFactory stepBuilderFactory;
     @Autowired
     private AccountIdentifierReader accountIdentifierReader;
-    @Autowired
-    private CoBrandCycleChoiceReader coBrandCycleChoiceReader;
     @Autowired
     @Qualifier("coBrand-cycle-processor")
     private CoBrandCycleChoiceProcessor coBrandCycleChoiceProcessor;

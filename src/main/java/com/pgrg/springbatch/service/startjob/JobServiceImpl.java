@@ -5,7 +5,6 @@ import com.pgrg.springbatch.entity.CutOffDate;
 import com.pgrg.springbatch.entity.TransactionDetails;
 import com.pgrg.springbatch.job.AccountIdentifierJob;
 import com.pgrg.springbatch.job.CoBrandCycleChoiceJob;
-import com.pgrg.springbatch.job.CoBrandCycleJob;
 import com.pgrg.springbatch.repo.AccountMasterRepo;
 import com.pgrg.springbatch.repo.CutOffRepo;
 import com.pgrg.springbatch.repo.TransactionDetailsRepo;
@@ -32,9 +31,6 @@ public class JobServiceImpl implements JobService{
     private JobLauncher jobLauncher;
 
     @Autowired
-    private CoBrandCycleJob coBrandCycleJob;
-
-    @Autowired
     private CoBrandCycleChoiceJob coBrandCycleChoiceJob;
 
     @Autowired
@@ -48,37 +44,6 @@ public class JobServiceImpl implements JobService{
 
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
-
-    @Override
-    public void startJobForFiserv() throws ParseException {
-        List<CutOffDate> cutOffDate = cutOffRepo.findAll();
-        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
-        CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
-            try {
-                return DateUtils.isSameDay(sdf.parse(x.getProcessingDate()), new Date());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }).findAny().orElse(null);
-
-        Long dateInLong = sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
-        JobParameters Parameters = new JobParametersBuilder()
-                .addLong("startAt", System.currentTimeMillis())
-                .addLong("cutOffDate", dateInLong)
-                .addString("cycleCode", cutOffDateObject.getCycleCode())
-                .toJobParameters();
-        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
-        try {
-            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(cutOffDateObject.getCycleCode()), Parameters);
-        } catch (JobExecutionAlreadyRunningException
-                | JobRestartException
-                | JobInstanceAlreadyCompleteException
-                | JobParametersInvalidException e) {
-
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void startJobForChoice() throws ParseException {

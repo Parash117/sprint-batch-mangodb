@@ -3,6 +3,7 @@ package com.pgrg.springbatch.writer;
 import com.pgrg.springbatch.dao.BaseRepo;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.entity.ODSTransactionMessageForChoice;
+import com.pgrg.springbatch.repo.ODSTransactionMessageFiservRepo;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,13 @@ public class CoBrandCycleWriter implements ItemWriter<ODSTransactionMessage> {
 
     @Autowired
     private BaseRepo<ODSTransactionMessage> baseRepo;
-    private final MongoTemplate mongoTemplate;
-
-    public CoBrandCycleWriter(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
 
     @Override
     public void write(List<? extends ODSTransactionMessage> items) throws Exception {
         List<ODSTransactionMessage> odsItemWriterList = (List<ODSTransactionMessage>) items;
-//        baseRepo.bulkInsert(odsItemWriterList, ODSTransactionMessage.class);
-        new MongoItemWriterBuilder<ODSTransactionMessageForChoice>()
+        baseRepo.bulkInsert(odsItemWriterList, ODSTransactionMessage.class);
+        /*new MongoItemWriterBuilder<ODSTransactionMessageForChoice>()
                 .template(mongoTemplate).collection("ods_transaction_choice")
-                .build();
+                .build();*/
     }
 }

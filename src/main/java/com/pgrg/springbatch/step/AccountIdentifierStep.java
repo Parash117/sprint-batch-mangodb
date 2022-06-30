@@ -4,7 +4,6 @@ import com.pgrg.springbatch.entity.AccountMaster;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.processor.AccountIdentifierFiservProcessor;
 import com.pgrg.springbatch.reader.subreaders.AccountIdentifierReader;
-import com.pgrg.springbatch.writer.AccountIdentifierWriter;
 import com.pgrg.springbatch.writer.CoBrandCycleWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;

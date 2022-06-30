@@ -21,21 +21,16 @@ import java.util.stream.Collectors;
 @Qualifier("cobrand-choice-writer")
 public class CoBrandCycleChoiceWriter implements ItemWriter<ODSTransactionMessageForChoice> {
 
-    private final MongoTemplate mongoTemplate;
-    private final AccountIdentifierRepo accountIdentifierRepo;
-
     @Autowired
     private BaseRepo<ODSTransactionMessageForChoice> baseRepo2;
 
-    public CoBrandCycleChoiceWriter(MongoTemplate mongoTemplate, AccountIdentifierRepo accountIdentifierRepo) {
-        this.mongoTemplate = mongoTemplate;
-        this.accountIdentifierRepo = accountIdentifierRepo;
-    }
 
     @Override
     public void write(List<? extends ODSTransactionMessageForChoice> items) throws Exception {
-        new MongoItemWriterBuilder<ODSTransactionMessageForChoice>()
+        List<ODSTransactionMessageForChoice> odsItemWriterList = (List<ODSTransactionMessageForChoice>) items;
+        baseRepo2.bulkInsert(odsItemWriterList, ODSTransactionMessageForChoice.class);
+        /*new MongoItemWriterBuilder<ODSTransactionMessageForChoice>()
                 .template(mongoTemplate).collection("ods_transaction_choice")
-                .build();
+                .build();*/
     }
 }

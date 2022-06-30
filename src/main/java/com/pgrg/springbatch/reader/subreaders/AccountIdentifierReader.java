@@ -19,14 +19,6 @@ public class AccountIdentifierReader {
     }
 
     public MongoItemReader<AccountMaster> reader(String cycleCode) {
-        MongoItemReader<AccountMaster> reader = new MongoItemReader<>();
-        reader.setTemplate(mongoTemplate);
-        reader.setSort(new HashMap<String, Sort.Direction>() {{
-            put("_id", Sort.Direction.DESC);
-        }});
-        reader.setTargetType(AccountMaster.class);
-//        reader.setQuery("{\"cycleCode\": "+Long.valueOf(cycleCode)+" }");
-
         MongoItemReader<AccountMaster> accountMasterMongoItemReader = new MongoItemReaderBuilder<AccountMaster>()
                 .collection("accountMaster")
                 .name("accountIdentifierReader")

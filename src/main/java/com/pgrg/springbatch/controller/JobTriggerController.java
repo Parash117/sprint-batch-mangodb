@@ -17,20 +17,14 @@ public class JobTriggerController {
     @Autowired
     private JobService jobService;
 
-    @GetMapping(path = "/fiserv") // Start batch process path
-    public ResponseEntity<String> startBatchFiserv() throws ParseException {
-        jobService.startJobForFiserv();
-        return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/choice") // Start batch process path
+    @GetMapping(path = "/choice") // Start batch process path For Choice
     public ResponseEntity<String> startBatchChoice() throws ParseException {
         jobService.startJobForChoice();
         return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
     }
 
-    @GetMapping(path = "/acid") // Start batch process path
-    public ResponseEntity<String> accountId() throws ParseException {
+    @GetMapping(path = "/fiserv") // Start batch process path for Fiserv
+    public ResponseEntity<String> startBatchFiserv() throws ParseException {
         jobService.startJobForAccountIdentifier();
         return new ResponseEntity<>("Batch Process started!!", HttpStatus.OK);
     }

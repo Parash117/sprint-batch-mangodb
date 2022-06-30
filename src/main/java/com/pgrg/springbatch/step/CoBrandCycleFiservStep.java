@@ -25,10 +25,10 @@ public class CoBrandCycleFiservStep {
     @Qualifier("cobrand-fiserv-writer")
     private CoBrandCycleWriter coBrandCycleWriter;
 
-    public Step stepOne() {
+    public Step stepOne(String param1) {
         return stepBuilderFactory.get("stepOne")
                 .<CoBrandAccountMaster, ODSTransactionMessage>chunk(20)
-                .reader(coBrandCycleReader.reader())
+                .reader(coBrandCycleReader.reader(param1))
                 .processor(coBrandCycleProcessor)
                 .writer(coBrandCycleWriter)
                 .build();

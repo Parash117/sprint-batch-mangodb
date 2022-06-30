@@ -68,7 +68,7 @@ public class BatchController {
         JobParameters Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis()).toJobParameters();
         try {
-            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
+            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob("aa"), Parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException

@@ -2,6 +2,7 @@ package com.pgrg.springbatch.service.startjob;
 
 import com.pgrg.springbatch.entity.AccountMaster;
 import com.pgrg.springbatch.entity.CutOffDate;
+import com.pgrg.springbatch.job.AccountIdentifierJob;
 import com.pgrg.springbatch.job.CoBrandCycleChoiceJob;
 import com.pgrg.springbatch.job.CoBrandCycleJob;
 import com.pgrg.springbatch.repo.AccountMasterRepo;
@@ -15,8 +16,6 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -42,6 +41,9 @@ public class JobServiceImpl implements JobService{
     @Autowired
     private AccountMasterRepo accountMasterRepo;
 
+    @Autowired
+    private AccountIdentifierJob accountIdentifierJob;
+
     @Override
     public void startJobForFiserv() throws ParseException {
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
@@ -61,16 +63,16 @@ public class JobServiceImpl implements JobService{
                 .addLong("cutOffDate", dateInLong)
                 .addString("cycleCode", cutOffDateObject.getCycleCode())
                 .toJobParameters();
-//        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
-//        try {
-//            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(), Parameters);
-//        } catch (JobExecutionAlreadyRunningException
-//                | JobRestartException
-//                | JobInstanceAlreadyCompleteException
-//                | JobParametersInvalidException e) {
-//
-//            e.printStackTrace();
-//        }
+        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
+        try {
+            jobLauncher.run(coBrandCycleJob.jobForRawToScoreJob(cutOffDateObject.getCycleCode()), Parameters);
+        } catch (JobExecutionAlreadyRunningException
+                | JobRestartException
+                | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -94,6 +96,37 @@ public class JobServiceImpl implements JobService{
                 .toJobParameters();
         try {
             jobLauncher.run(coBrandCycleChoiceJob.jobForRawToScoreJob(), Parameters);
+        } catch (JobExecutionAlreadyRunningException
+                | JobRestartException
+                | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void startJobForAccountIdentifier() throws ParseException {
+        List<CutOffDate> cutOffDate = cutOffRepo.findAll();
+        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
+        CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
+            try {
+                return DateUtils.isSameDay(sdf.parse(x.getProcessingDate()), new Date());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }).findAny().orElse(null);
+
+        Long dateInLong = sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
+        JobParameters Parameters = new JobParametersBuilder()
+                .addLong("startAt", System.currentTimeMillis())
+                .addLong("cutOffDate", dateInLong)
+                .addString("cycleCode", cutOffDateObject.getCycleCode())
+                .toJobParameters();
+        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
+        try {
+            jobLauncher.run(accountIdentifierJob.accountIdJob(cutOffDateObject.getCycleCode()), Parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException

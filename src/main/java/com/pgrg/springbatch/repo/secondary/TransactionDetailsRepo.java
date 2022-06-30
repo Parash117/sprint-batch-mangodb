@@ -1,4 +1,4 @@
-package com.pgrg.springbatch.repo;
+package com.pgrg.springbatch.repo.secondary;
 
 import com.pgrg.springbatch.entity.TransactionDetails;
 import org.springframework.data.mongodb.repository.Aggregation;

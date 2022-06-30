@@ -1,4 +1,4 @@
-package com.pgrg.springbatch.repo;
+package com.pgrg.springbatch.repo.primary;
 
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import org.springframework.data.mongodb.repository.MongoRepository;

@@ -1,10 +1,9 @@
 package com.pgrg.springbatch.processor;
 
-import com.pgrg.springbatch.entity.AccountIdentifiers;
 import com.pgrg.springbatch.entity.AccountMaster;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.entity.TransactionDetails;
-import com.pgrg.springbatch.repo.TransactionDetailsRepo;
+import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;

@@ -1,6 +1,5 @@
 package com.pgrg.springbatch.listner;
 
-import com.pgrg.springbatch.repo.ODSTransactionMessageFiservRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
@@ -11,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class JobCompletionListener extends JobExecutionListenerSupport {
 
-    private final ODSTransactionMessageFiservRepo odsTransactionMessageFiservRepo;
+//    private final ODSTransactionMessageFiservRepo odsTransactionMessageFiservRepo;
 
-    public JobCompletionListener(ODSTransactionMessageFiservRepo odsTransactionMessageFiservRepo) {
-        this.odsTransactionMessageFiservRepo = odsTransactionMessageFiservRepo;
-    }
+//    public JobCompletionListener(ODSTransactionMessageFiservRepo odsTransactionMessageFiservRepo) {
+//        this.odsTransactionMessageFiservRepo = odsTransactionMessageFiservRepo;
+//    }
 
     @Override
     public void afterJob(JobExecution jobExecution) {

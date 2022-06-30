@@ -2,13 +2,9 @@ package com.pgrg.springbatch.writer;
 
 import com.pgrg.springbatch.dao.BaseRepo;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
-import com.pgrg.springbatch.entity.ODSTransactionMessageForChoice;
-import com.pgrg.springbatch.repo.ODSTransactionMessageFiservRepo;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.data.builder.MongoItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

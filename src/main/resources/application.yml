@@ -1,8 +1,16 @@
 spring:
+#  data:
+#    mongodb:
+#      uri: mongodb+srv://mongouser:mangopassword@testdb.wgarjwv.mongodb.net/?retryWrites=true&w=majority
+#      database: testdb
   data:
     mongodb:
-      uri: mongodb+srv://mongouser:mangopassword@testdb.wgarjwv.mongodb.net/?retryWrites=true&w=majority
-      database: testdb
+      primary:
+        uri: mongodb+srv://mongouser:mangopassword@testdb.wgarjwv.mongodb.net/?retryWrites=true&w=majority
+        database: testdb
+      secondary:
+        uri: mongodb+srv://mongouser:mangopassword@testdb2.wgarjwv.mongodb.net/?retryWrites=true&w=majority
+        database: testdb2
   batch:
     job:
       enabled: false
@@ -10,3 +18,11 @@ spring:
       initialize-schema: embedded
 server:
   port: 8085
+
+mongo:
+  primary:
+    uri: mongodb+srv://mongouser:mangopassword@testdb.wgarjwv.mongodb.net/?retryWrites=true&w=majority
+    database: testdb
+  secondary:
+    uri: mongodb+srv://mongouser:mangopassword@testdb2.wgarjwv.mongodb.net/?retryWrites=true&w=majority
+    database: testdb2

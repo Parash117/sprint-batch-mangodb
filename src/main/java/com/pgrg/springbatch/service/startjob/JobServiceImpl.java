@@ -88,7 +88,9 @@ public class JobServiceImpl implements JobService{
                 return false;
             }
         }).findAny().orElse(null);
-
+        if(cutOffDateObject == null ){
+            throw new RuntimeException("No cycle Date For today");
+        }
         Long dateInLong = sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
         JobParameters Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())

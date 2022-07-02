@@ -6,10 +6,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TransactionDetailsRepo extends MongoRepository<TransactionDetails, Long> {
 
-    @Query("{'emAccountNumber' : ?0 }, {'limit' : 1}")
-    TransactionDetails findTransactionByEmAccountNumber(String emAccountNumber);
+    @Query("{'emAccountNumber' : ?0, 'cycledForFiserv': 'N' }")
+    List<TransactionDetails> findTransactionByEmAccountNumber(String emAccountNumber);
 
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Component("acc-id-processor")
 public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMaster, ODSTransactionMessage> {
@@ -29,18 +30,24 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
 
     @Override
     public ODSTransactionMessage process(AccountMaster item) throws Exception {
+        List<TransactionDetails> transactionDetailsList = transactionDetailsRepo.findTransactionByEmAccountNumber(item.getAccountIdentifier());
 
-        TransactionDetails transactionDetails = transactionDetailsRepo.findTransactionByEmAccountNumber(item.getAccountIdentifier());
-        if(transactionDetails != null && "N".equalsIgnoreCase(transactionDetails.getCycledForFiserv())) {
-            ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
-                    .crn(transactionDetails.getEmAccountNumber())
-                    .cycleDate(cycleDate)
-                    .totalPointsEarned(transactionDetails.getBonus().stream()
-                            .map(x-> x.getPointsEarned())
-                            .reduce(BigDecimal.ZERO, BigDecimal::add))
-                    .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
-                .build();
-            return odsTransactionMessage;
+        if(transactionDetailsList != null && transactionDetailsList.size()>0) {
+            TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
+            BigDecimal totalScore = transactionDetailsList.parallelStream()
+//                    .filter(x-> "N".equalsIgnoreCase(x.getCycledForFiserv()))
+                    .flatMap(x ->
+                            x.getBonus().stream().map(y ->
+                                    y.getPointsEarned())
+                    ).reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
+                        .crn(transactionDetails.getEmAccountNumber())
+                        .cycleDate(cycleDate)
+                        .totalPointsEarned(totalScore)
+                        .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                        .build();
+                return odsTransactionMessage;
         }
         return null;
     }

@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@EnableMongoAuditing
 public class MultipleMongoConfig {
 
     @Primary
@@ -53,31 +52,12 @@ public class MultipleMongoConfig {
     @Primary
     @Bean(name = "primaryMongoTemplate")
     public MongoTemplate primaryMongoTemplate() throws Exception {
-        MappingMongoConverter converter = new MappingMongoConverter(new DefaultDbRefResolver(primaryMongoDatabaseFactory(primaryDbProperty())),
-                new MongoMappingContext());
-        converter.setMapKeyDotReplacement("_");
-
-        List<Converter<?, ?>> converters = new ArrayList<Converter<?, ?>>();
-//        converters.add(new GeoPointConverter());
-
-//        converters.addAll(Jsr310Converters.getConvertersToRegister());
-//        converters.addAll(JodaTimeConverters.getConvertersToRegister());
-//        converters.addAll(ThreeTenBackPortConverters.getConvertersToRegister());
-
-        converter.setCustomConversions(new CustomConversions(CustomConversions.StoreConversions.NONE, converters));
-
-        return new MongoTemplate(primaryMongoDatabaseFactory(primaryDbProperty()), converter);
+        return new MongoTemplate(primaryMongoDatabaseFactory(primaryDbProperty()));
     }
 
     @Bean(name ="secondaryMongoTemplate")
     public MongoTemplate secondaryMongoTemplate() throws Exception {
-        MappingMongoConverter converter = new MappingMongoConverter(new DefaultDbRefResolver(primaryMongoDatabaseFactory(primaryDbProperty())),
-                new MongoMappingContext());
-        converter.setMapKeyDotReplacement("_");
-        List<Converter<?, ?>> converters = new ArrayList<Converter<?, ?>>();
-        converter.setCustomConversions(new CustomConversions(CustomConversions.StoreConversions.NONE, converters));
-
-        return new MongoTemplate(secondaryMongoDatabaseFactory(secondaryDbProperty()), converter);
+        return new MongoTemplate(secondaryMongoDatabaseFactory(secondaryDbProperty()));
     }
 
     @Primary

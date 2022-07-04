@@ -39,7 +39,7 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
 //                    .filter(x-> "N".equalsIgnoreCase(x.getCycledForFiserv()))
                     .flatMap(x -> {
                                 x.setCycledForFiserv("Y");
-                                transactionDetailsRepo.save(x);
+//                                transactionDetailsRepo.save(x);
                                 return x.getBonus().stream().map(y ->
                                         y.getPointsEarned());
                             }

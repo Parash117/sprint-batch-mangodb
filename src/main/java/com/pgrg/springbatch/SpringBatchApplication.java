@@ -8,8 +8,12 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class, MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class,
+		MongoAutoConfiguration.class
+//		MongoDataAutoConfiguration.class
+})
 @EnableScheduling
+@EnableMongoAuditing
 public class SpringBatchApplication {
 
 	public static void main(String[] args) {

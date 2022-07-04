@@ -1,9 +1,6 @@
 package com.pgrg.springbatch.processor;
 
-import com.pgrg.springbatch.entity.AccountMaster;
-import com.pgrg.springbatch.entity.ODSTransactionMessage;
-import com.pgrg.springbatch.entity.ODSTransactionMessageForChoice;
-import com.pgrg.springbatch.entity.TransactionDetails;
+import com.pgrg.springbatch.entity.*;
 import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.JobParameters;
@@ -37,7 +34,7 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
 
     @Override
     public ODSTransactionMessageForChoice process(AccountMaster item) throws Exception {
-        List<TransactionDetails> transactionDetailsList = transactionDetailsRepo.findTransactionByEmAccountNumber(item.getAccountIdentifier());
+        List<TransactionDetails> transactionDetailsList = transactionDetailsRepo.findTransactionByEmAccountNumberForChoice(item.getAccountIdentifier());
 
         if(transactionDetailsList != null && transactionDetailsList.size()>0) {
             TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
@@ -52,6 +49,7 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
                     .crn(transactionDetails.getEmAccountNumber())
                     .cycleDate(cycleDate)
                     .totalPointsEarned(totalScore)
+                    .audit(new Audit())
                     .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
                     .build();
             return odsTransactionMessage;

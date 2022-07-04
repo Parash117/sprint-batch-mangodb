@@ -1,6 +1,7 @@
 package com.pgrg.springbatch.processor;
 
 import com.pgrg.springbatch.entity.AccountMaster;
+import com.pgrg.springbatch.entity.Audit;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.entity.TransactionDetails;
 import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
@@ -36,9 +37,12 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
             TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
             BigDecimal totalScore = transactionDetailsList.parallelStream()
 //                    .filter(x-> "N".equalsIgnoreCase(x.getCycledForFiserv()))
-                    .flatMap(x ->
-                            x.getBonus().stream().map(y ->
-                                    y.getPointsEarned())
+                    .flatMap(x -> {
+                                x.setCycledForFiserv("Y");
+                                transactionDetailsRepo.save(x);
+                                return x.getBonus().stream().map(y ->
+                                        y.getPointsEarned());
+                            }
                     ).reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
@@ -46,6 +50,7 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
                         .cycleDate(cycleDate)
                         .totalPointsEarned(totalScore)
                         .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                        .audit(new Audit())
                         .build();
                 return odsTransactionMessage;
         }

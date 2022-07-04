@@ -33,6 +33,8 @@ public class ODSTransactionMessage {
 
     private String cycledForChoice;
 
+    private Audit audit = new Audit();
+
     @Override
     public String toString() {
         return "ODSTransactionMessage{" +

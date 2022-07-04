@@ -29,6 +29,8 @@ public class ODSTransactionMessageForChoice {
 
     private String destinationSystem;
 
+    private Audit audit = new Audit();
+
     @Override
     public String toString() {
         return "ODSTransactionMessage{" +

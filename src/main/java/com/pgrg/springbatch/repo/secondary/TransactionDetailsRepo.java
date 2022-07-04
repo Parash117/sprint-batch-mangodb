@@ -14,4 +14,7 @@ public interface TransactionDetailsRepo extends MongoRepository<TransactionDetai
     @Query("{'emAccountNumber' : ?0, 'cycledForFiserv': 'N' }")
     List<TransactionDetails> findTransactionByEmAccountNumber(String emAccountNumber);
 
+    @Query("{'emAccountNumber' : ?0, 'cycledForChoice': 'N' }")
+    List<TransactionDetails> findTransactionByEmAccountNumberForChoice(String emAccountNumber);
+
 }

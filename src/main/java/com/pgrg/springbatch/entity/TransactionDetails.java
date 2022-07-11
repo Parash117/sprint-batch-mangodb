@@ -19,7 +19,7 @@ public class TransactionDetails {
 
     private String emAccountNumber;
 
-    private BigDecimal transactionAmount;
+    private Long transactionAmount;
 
     private Long merchantID;
 

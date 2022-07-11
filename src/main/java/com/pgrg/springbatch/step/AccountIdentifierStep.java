@@ -6,9 +6,12 @@ import com.pgrg.springbatch.processor.AccountIdentifierFiservProcessor;
 import com.pgrg.springbatch.reader.subreaders.AccountIdentifierReader;
 import com.pgrg.springbatch.writer.CoBrandCycleWriter;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.annotation.BeforeRead;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +27,7 @@ public class AccountIdentifierStep {
     @Autowired
     @Qualifier("cobrand-fiserv-writer")
     private CoBrandCycleWriter coBrandCycleWriter;
-
+    
     public Step stepForAccId(String cycleCode) {
         return stepBuilderFactory.get("stepForAccountId")
                 .<AccountMaster, ODSTransactionMessage>chunk(20)

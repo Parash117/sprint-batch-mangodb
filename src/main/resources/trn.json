@@ -1,0 +1,186 @@
+[{
+  "_id": {
+    "$oid": "62bb5239dd4d4b3d4e5f1a63"
+  },
+  "transactionCode": "253",
+  "emAccountNumber": "500000000000001",
+  "fdrProductType": "604",
+  "transactionAmount": 4000,
+  "merchantID": "5474648805234760",
+  "merchantCategoryCode": "5942",
+  "bonus": [
+    {
+      "bonusCode": "2022CH0001",
+      "partnerMerchantCategoryCode": "CH01",
+      "bonusScore": 100
+    },
+    {
+      "bonusCode": "2022CH0002",
+      "partnerMerchantCategoryCode": "CH02",
+      "bonusScore": 400
+    }
+  ],
+  "cycledForFiserv": "N",
+  "cycledForPartner": "N",
+  "transactionDate": {
+    "$date": "2022-06-10T07:00:00Z"
+  },
+  "transactionPostedDate": {
+    "$date": "2022-06-12T07:00:00Z"
+  },
+  "audit": {
+    "createdBy": "CoBrandBonusScorer",
+    "createdTs": {
+      "$date": "2022-06-29T00:34:57.721Z"
+    },
+    "odsFileName": "",
+    "lastModifiedBy": "",
+    "lastModifiedTs": {
+      "$date": "2022-06-29T07:00:00Z"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "62bb6115f7f1d30af0b28cfd"
+  },
+  "emAccountNumber": "500000000000001",
+  "fdrProductType": "604",
+  "transactionCode": "253",
+  "transactionAmount": 2000,
+  "merchantID": "5474648805234760",
+  "merchantCategoryCode": "5942",
+  "bonus": [
+    {
+      "bonusCode": "2022CH0001",
+      "partnerMerchantCategoryCode": "CH01",
+      "bonusScore": 200
+    }
+  ],
+  "cycledForFiserv": "N",
+  "cycledForPartner": "N",
+  "transactionDate": {
+    "$date": "2022-06-17T07:00:00Z"
+  },
+  "transactionPostedDate": {
+    "$date": "2022-06-20T07:00:00Z"
+  },
+  "audit": {
+    "createdBy": "CoBrandBonusScorer",
+    "createdTs": {
+      "$date": "2022-06-29T00:34:57.721Z"
+    },
+    "odsFileName": "",
+    "lastModifiedBy": "",
+    "lastModifiedTs": {
+      "$date": "2022-06-29T07:00:00Z"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "62bb63fbf7f1d30af0b28cfe"
+  },
+  "emAccountNumber": "500000000000001",
+  "fdrProductType": "604",
+  "transactionCode": "253",
+  "transactionAmount": 3000,
+  "merchantID": "5474648805234760",
+  "merchantCategoryCode": "5942",
+  "bonus": [
+    {
+      "bonusCode": "2022CH0001",
+      "partnerMerchantCategoryCode": "CH01",
+      "bonusScore": 300
+    }
+  ],
+  "cycledForFiserv": "N",
+  "cycledForPartner": "N",
+  "transactionDate": {
+    "$date": "2022-06-17T07:00:00Z"
+  },
+  "transactionPostedDate": {
+    "$date": "2022-06-20T07:00:00Z"
+  },
+  "audit": {
+    "createdBy": "CoBrandBonusScorer",
+    "createdTs": {
+      "$date": "2022-06-29T00:34:57.721Z"
+    },
+    "odsFileName": "",
+    "lastModifiedBy": "",
+    "lastModifiedTs": {
+      "$date": "2022-06-29T07:00:00Z"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "62bcae0ca0c7450f549f1f13"
+  },
+  "emAccountNumber": "500000000000001",
+  "fdrProductType": "604",
+  "transactionCode": "255",
+  "transactionAmount": 1000,
+  "merchantID": "5474648805234760",
+  "merchantCategoryCode": "5942",
+  "bonus": [
+    {
+      "bonusCode": "2022CH0001",
+      "partnerMerchantCategoryCode": "CH01",
+      "bonusScore": -100
+    }
+  ],
+  "cycledForFiserv": "N",
+  "cycledForPartner": "N",
+  "transactionDate": {
+    "$date": "2022-06-17T07:00:00Z"
+  },
+  "transactionPostedDate": {
+    "$date": "2022-06-20T07:00:00Z"
+  },
+  "audit": {
+    "createdBy": "CoBrandBonusScorer",
+    "createdTs": {
+      "$date": "2022-06-29T00:34:57.721Z"
+    },
+    "odsFileName": "",
+    "lastModifiedBy": "",
+    "lastModifiedTs": {
+      "$date": "2022-06-29T07:00:00Z"
+    }
+  }
+},{
+  "_id": {
+    "$oid": "62bcb09aa0c7450f549f1f14"
+  },
+  "emAccountNumber": "500000000000001",
+  "fdrProductType": "604",
+  "transactionCode": "253",
+  "transactionAmount": 500,
+  "merchantID": "5474648805234760",
+  "merchantCategoryCode": "5942",
+  "bonus": [
+    {
+      "bonusCode": "2022CH0001",
+      "partnerMerchantCategoryCode": "CH01",
+      "bonusScore": 50
+    }
+  ],
+  "cycledForFiserv": "Y",
+  "cycledForPartner": "Y",
+  "transactionDate": {
+    "$date": "2022-06-01T07:00:00Z"
+  },
+  "transactionPostedDate": {
+    "$date": "2022-06-05T07:00:00Z"
+  },
+  "audit": {
+    "createdBy": "CoBrandBonusScorer",
+    "createdTs": {
+      "$date": "2022-06-29T00:34:57.721Z"
+    },
+    "odsFileName": "",
+    "lastModifiedBy": "",
+    "lastModifiedTs": {
+      "$date": "2022-06-29T07:00:00Z"
+    }
+  }
+}]

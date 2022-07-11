@@ -18,7 +18,7 @@ public class ODSTransactionRaw {
 
     private Double transactionAmount;
 
-    private BigDecimal pointsEarned;
+    private Long pointsEarned;
 
     private Integer merchantID;
 

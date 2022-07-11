@@ -19,7 +19,7 @@ public class ODSTransactionMessage {
 
     private String crn;
 
-    private BigDecimal totalPointsEarned;
+    private Long totalPointsEarned;
 
     private String bonusCode;
 

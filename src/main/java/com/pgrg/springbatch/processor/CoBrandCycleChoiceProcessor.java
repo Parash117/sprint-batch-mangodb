@@ -38,12 +38,12 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
 
         if(transactionDetailsList != null && transactionDetailsList.size()>0) {
             TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
-            BigDecimal totalScore = transactionDetailsList.parallelStream()
+            Long totalScore = transactionDetailsList.parallelStream()
 //                    .filter(x-> "N".equalsIgnoreCase(x.getCycledForFiserv()))
                     .flatMap(x ->
                             x.getBonus().stream().map(y ->
                                     y.getPointsEarned())
-                    ).reduce(BigDecimal.ZERO, BigDecimal::add);
+                    ).mapToLong(x-> x.longValue()).sum();
 
             ODSTransactionMessageForChoice odsTransactionMessage = ODSTransactionMessageForChoice.builder()
                     .crn(transactionDetails.getEmAccountNumber())

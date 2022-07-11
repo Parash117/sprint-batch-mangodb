@@ -16,5 +16,5 @@ public class Bonus{
 
     private String choiceCategoryCd;
 
-    private BigDecimal pointsEarned;
+    private Long pointsEarned;
 }

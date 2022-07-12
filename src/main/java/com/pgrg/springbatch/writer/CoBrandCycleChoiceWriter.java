@@ -1,6 +1,7 @@
 package com.pgrg.springbatch.writer;
 
 import com.pgrg.springbatch.dao.BaseRepo;
+import com.pgrg.springbatch.entity.Audit;
 import com.pgrg.springbatch.entity.ODSTransactionMessage;
 import com.pgrg.springbatch.entity.ODSTransactionMessageForChoice;
 import com.pgrg.springbatch.repo.AccountIdentifierRepo;
@@ -28,9 +29,23 @@ public class CoBrandCycleChoiceWriter implements ItemWriter<ODSTransactionMessag
     @Override
     public void write(List<? extends ODSTransactionMessageForChoice> items) throws Exception {
         List<ODSTransactionMessageForChoice> odsItemWriterList = (List<ODSTransactionMessageForChoice>) items;
-        baseRepo2.bulkInsert(odsItemWriterList, ODSTransactionMessageForChoice.class);
-        /*new MongoItemWriterBuilder<ODSTransactionMessageForChoice>()
-                .template(mongoTemplate).collection("ods_transaction_choice")
-                .build();*/
+        List<ODSTransactionMessageForChoice> odsTransactionMessageList = new ArrayList<>();
+
+        odsItemWriterList.parallelStream().forEach(x -> {
+            x.getBonusList().parallelStream().forEach( y ->
+                    odsTransactionMessageList.add(
+                            ODSTransactionMessageForChoice.builder()
+                            .emAccountNumber(x.getEmAccountNumber())
+                            .cycleDate(x.getCycleDate())
+                            .partnerMerchantCategoryCode(y.getPartnerMerchantCategoryCode())
+                            .bonusEarn(y.getBonusScore())
+                            .processedDate(x.getProcessedDate())
+                            .audit(new Audit())
+                            .build()
+                    )
+            );
+        });
+
+        baseRepo2.bulkInsert(odsTransactionMessageList, ODSTransactionMessageForChoice.class);
     }
 }

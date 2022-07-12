@@ -57,12 +57,7 @@ public class JobServiceImpl implements JobService{
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
         Date yesterdayDate = new Date(Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli());
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
-//            try {
                 return DateUtils.isSameDay((x.getProcessingDate()), yesterdayDate);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//                return false;
-//            }
         }).findAny().orElseThrow(()-> new RuntimeException( messageSource.getMessage("not.found", messageSource.getMessage("cycledate"))));
 
         Long dateInLong = cutOffDateObject.getProcessingDate().getTime(); //sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
@@ -88,12 +83,7 @@ public class JobServiceImpl implements JobService{
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
         SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
-//            try {
                 return DateUtils.isSameDay((x.getProcessingDate()), new Date());
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//                return false;
-//            }
         }).findAny().orElseThrow(()-> new RuntimeException( messageSource.getMessage("not.found", messageSource.getMessage("cycledate"))));
         if(cutOffDateObject == null ){
             throw new RuntimeException("No cycle Date For today");

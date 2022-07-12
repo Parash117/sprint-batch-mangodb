@@ -23,6 +23,7 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
     private String cycleDate;
+
     @BeforeStep
     public void beforeStep(final StepExecution stepExecution) {
         JobParameters jobParameters = stepExecution.getJobParameters();
@@ -33,40 +34,22 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
     public ODSTransactionMessage process(AccountMaster item) throws Exception {
         List<TransactionDetails> transactionDetailsList = transactionDetailsRepo.findTransactionByEmAccountNumber(item.getAccountIdentifier());
 
-        if(transactionDetailsList != null && transactionDetailsList.size()>0) {
+        if (transactionDetailsList != null && transactionDetailsList.size() > 0) {
             TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
             Long totalScore = transactionDetailsList.parallelStream()
-//                    .filter(x-> "N".equalsIgnoreCase(x.getCycledForFiserv()))
-                    .flatMap(x -> {
-                                x.setCycledForFiserv("Y");
-//                                transactionDetailsRepo.save(x);
-                                return x.getBonus().stream().map(y ->
-                                        y.getBonusScore());
-                            }
+                    .flatMap(x ->
+                            x.getBonus().stream().map(y ->
+                                    y.getBonusScore())
                     ).mapToLong(x -> x.longValue()).sum();
 
-            Map<String, Long> odsItemSumMap = transactionDetailsList.stream().flatMap(x-> x.getBonus().stream()).collect(
-                    Collectors.groupingBy(y ->
-                                    y.getPartnerMerchantCategoryCode(),
-                            Collectors.summingLong(y->y.getBonusScore())
-                    )
-            );
-            List<Bonus> bonusList = new ArrayList<>();
-
-            odsItemSumMap.entrySet().parallelStream().forEach( z -> {
-                bonusList.add(Bonus.builder()
-                        .partnerMerchantCategoryCode(z.getKey())
-                        .bonusScore(z.getValue())
-                        .build());
-            });
-                ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
-                        .emAccountNumber(transactionDetails.getEmAccountNumber())
-                        .cycleDate(cycleDate)
-                        .bonusList(bonusList)
-                        .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
-                        .audit(new Audit())
-                        .build();
-                return odsTransactionMessage;
+            ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
+                    .emAccountNumber(transactionDetails.getEmAccountNumber())
+                    .cycleDate(cycleDate)
+                    .bonusEarn(totalScore)
+                    .audit(new Audit())
+                    .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                    .build();
+            return odsTransactionMessage;
         }
         return null;
     }

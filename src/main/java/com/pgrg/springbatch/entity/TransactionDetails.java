@@ -31,6 +31,6 @@ public class TransactionDetails {
 
     private String cycledForFiserv;
 
-    private String cycledForChoice;
+    private String cycledForPartner;
 }
 

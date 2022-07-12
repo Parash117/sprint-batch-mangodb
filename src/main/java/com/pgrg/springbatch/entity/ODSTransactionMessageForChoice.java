@@ -1,9 +1,11 @@
 package com.pgrg.springbatch.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,46 +15,22 @@ import java.math.BigDecimal;
 @Document("ods_transaction_choice")
 public class ODSTransactionMessageForChoice {
 
-    private Long uid;
+    private Long _id;
 
-    private Long id;
+    private String emAccountNumber;
 
-    private String crn;
+    private Long bonusEarn;
 
-    private Long totalPointsEarned;
-
-    private String bonusCode;
+    private String partnerMerchantCategoryCode;
 
     private String cycleDate;
 
     private String processedDate;
 
-    private String destinationSystem;
+    private String partnerConfirmationNo;
 
     private Audit audit = new Audit();
 
-    @Override
-    public String toString() {
-        return "ODSTransactionMessage{" +
-                "id=" + id +
-                ", crn='" + crn + '\'' +
-                ", totalPointsEarned=" + totalPointsEarned +
-                ", bonusCode='" + bonusCode + '\'' +
-                ", cycleDate='" + cycleDate + '\'' +
-                ", processedDate='" + processedDate + '\'' +
-                ", destinationSystem='" + destinationSystem + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof ODSTransactionMessageForChoice)) {
-            return false;
-        }
-        ODSTransactionMessageForChoice ods = (ODSTransactionMessageForChoice) obj;
-        return this.crn.equals(ods.crn);
-    }
+    @Transient
+    private List<Bonus> bonusList;
 }

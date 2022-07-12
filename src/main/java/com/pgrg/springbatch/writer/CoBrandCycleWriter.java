@@ -27,56 +27,7 @@ public class CoBrandCycleWriter implements ItemWriter<ODSTransactionMessage> {
 
     @Override
     public void write(List<? extends ODSTransactionMessage> items) throws Exception {
-
         List<ODSTransactionMessage> odsItemWriterList = (List<ODSTransactionMessage>) items;
-        int size = odsItemWriterList.size();
-        int offset = size/2;
-        List<ODSTransactionMessage> odsTransactionMessageList = new ArrayList<>();
-        /*CompletableFuture<List<ODSTransactionMessage>> futurePartition1 = splitToCategoryWise(odsItemWriterList.subList(0, offset));
-        CompletableFuture<List<ODSTransactionMessage>> futurePartition2 = splitToCategoryWise(odsItemWriterList.subList(offset+1, size-1));*/
-        odsItemWriterList.parallelStream().forEach( x -> {
-            x.getBonusList().parallelStream().forEach( y ->
-                odsTransactionMessageList.add(ODSTransactionMessage.builder()
-                        .emAccountNumber(x.getEmAccountNumber())
-                        .cycleDate(x.getCycleDate())
-                        .partnerMerchantCategoryCode(y.getPartnerMerchantCategoryCode())
-                        .bonusEarn(y.getBonusScore())
-                        .processedDate(x.getProcessedDate())
-                        .audit(new Audit())
-                        .build())
-                );
-            });
-
-        /*odsTransactionMessageList.addAll(futurePartition1.get());
-        odsTransactionMessageList.addAll(futurePartition2.get());*/
-        baseRepo.bulkInsert(odsTransactionMessageList, ODSTransactionMessage.class);
-        /*new MongoItemWriterBuilder<ODSTransactionMessageForChoice>()
-                .template(mongoTemplate).collection("ods_transaction_choice")
-                .build();*/
-    }
-
-    @Async
-    public CompletableFuture<List<ODSTransactionMessage>> splitToCategoryWise(List<ODSTransactionMessage> odsItemWriterList){
-        List<ODSTransactionMessage> odsTransactionMessageList = new ArrayList<>();
-        odsItemWriterList.parallelStream().forEach( x->{
-            Map<String, Long> odsItemSumMap = x.getBonusList().stream().collect(
-                    Collectors.groupingBy(y ->
-                                    y.getPartnerMerchantCategoryCode(),
-                            Collectors.summingLong(y->y.getBonusScore())
-                    )
-            );
-
-            odsItemSumMap.entrySet().parallelStream().forEach( z -> {
-                odsTransactionMessageList.add(ODSTransactionMessage.builder()
-                        .emAccountNumber(x.getEmAccountNumber())
-                        .cycleDate(x.getCycleDate())
-                        .partnerMerchantCategoryCode(z.getKey())
-                        .bonusEarn(z.getValue())
-                        .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
-                        .audit(new Audit())
-                        .build());
-            });
-        });
-        return CompletableFuture.completedFuture(odsTransactionMessageList);
+        baseRepo.bulkInsert(odsItemWriterList, ODSTransactionMessage.class);
     }
 }

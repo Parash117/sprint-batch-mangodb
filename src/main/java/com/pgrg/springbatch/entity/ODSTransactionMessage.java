@@ -20,20 +20,15 @@ public class ODSTransactionMessage {
 
     private String emAccountNumber;
 
-    private Long bonusEarn;
+    private String fdrProductType;
 
-    private String partnerMerchantCategoryCode;
+    private Long bonusEarn;
 
     private String cycleDate;
 
     private String processedDate;
 
-    private String partnerConfirmationNo;
-
     private Audit audit = new Audit();
-
-    @Transient
-    private List<Bonus> bonusList;
 
 
     @Override

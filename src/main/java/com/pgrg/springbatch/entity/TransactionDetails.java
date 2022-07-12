@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @Document("transactionDetails")
 public class TransactionDetails {
-    private Long _id;
+    private Object _id;
 
     private String emAccountNumber;
 

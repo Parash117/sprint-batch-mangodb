@@ -15,43 +15,26 @@ import java.util.List;
 @AllArgsConstructor
 @Document("ods_transaction_fiserv")
 public class ODSTransactionMessage {
-    private Long uid;
 
-    private Long id;
+    private Long _id;
 
-    private String crn;
+    private String emAccountNumber;
 
-    private Long totalPointsEarned;
+    private Long bonusEarn;
 
-    private String bonusCode;
+    private String partnerMerchantCategoryCode;
 
     private String cycleDate;
 
     private String processedDate;
 
-    private String destinationSystem;
-
-    private String cycledForFiserv;
-
-    private String cycledForChoice;
+    private String partnerConfirmationNo;
 
     private Audit audit = new Audit();
 
     @Transient
     private List<Bonus> bonusList;
 
-    @Override
-    public String toString() {
-        return "ODSTransactionMessage{" +
-                "id=" + id +
-                ", crn='" + crn + '\'' +
-                ", totalPointsEarned=" + totalPointsEarned +
-                ", bonusCode='" + bonusCode + '\'' +
-                ", cycleDate='" + cycleDate + '\'' +
-                ", processedDate='" + processedDate + '\'' +
-                ", destinationSystem='" + destinationSystem + '\'' +
-                '}';
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -62,7 +45,7 @@ public class ODSTransactionMessage {
             return false;
         }
         ODSTransactionMessage ods = (ODSTransactionMessage) obj;
-        return this.crn.equals(ods.crn);
+        return this._id.equals(ods._id);
     }
 
 }

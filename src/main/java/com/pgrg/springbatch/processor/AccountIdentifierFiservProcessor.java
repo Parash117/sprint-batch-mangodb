@@ -1,9 +1,6 @@
 package com.pgrg.springbatch.processor;
 
-import com.pgrg.springbatch.entity.AccountMaster;
-import com.pgrg.springbatch.entity.Audit;
-import com.pgrg.springbatch.entity.ODSTransactionMessage;
-import com.pgrg.springbatch.entity.TransactionDetails;
+import com.pgrg.springbatch.entity.*;
 import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
@@ -14,8 +11,11 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component("acc-id-processor")
 public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMaster, ODSTransactionMessage> {
@@ -41,14 +41,28 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
                                 x.setCycledForFiserv("Y");
 //                                transactionDetailsRepo.save(x);
                                 return x.getBonus().stream().map(y ->
-                                        y.getPointsEarned());
+                                        y.getBonusScore());
                             }
                     ).mapToLong(x -> x.longValue()).sum();
 
+            Map<String, Long> odsItemSumMap = transactionDetailsList.stream().flatMap(x-> x.getBonus().stream()).collect(
+                    Collectors.groupingBy(y ->
+                                    y.getPartnerMerchantCategoryCode(),
+                            Collectors.summingLong(y->y.getBonusScore())
+                    )
+            );
+            List<Bonus> bonusList = new ArrayList<>();
+
+            odsItemSumMap.entrySet().parallelStream().forEach( z -> {
+                bonusList.add(Bonus.builder()
+                        .partnerMerchantCategoryCode(z.getKey())
+                        .bonusScore(z.getValue())
+                        .build());
+            });
                 ODSTransactionMessage odsTransactionMessage = ODSTransactionMessage.builder()
-                        .crn(transactionDetails.getEmAccountNumber())
+                        .emAccountNumber(transactionDetails.getEmAccountNumber())
                         .cycleDate(cycleDate)
-                        .totalPointsEarned(totalScore)
+                        .bonusList(bonusList)
                         .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
                         .audit(new Audit())
                         .build();

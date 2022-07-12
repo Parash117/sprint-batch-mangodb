@@ -42,7 +42,7 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
 //                    .filter(x-> "N".equalsIgnoreCase(x.getCycledForFiserv()))
                     .flatMap(x ->
                             x.getBonus().stream().map(y ->
-                                    y.getPointsEarned())
+                                    y.getBonusScore())
                     ).mapToLong(x-> x.longValue()).sum();
 
             ODSTransactionMessageForChoice odsTransactionMessage = ODSTransactionMessageForChoice.builder()

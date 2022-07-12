@@ -30,7 +30,7 @@ public class AccountIdentifierStep {
     
     public Step stepForAccId(String cycleCode) {
         return stepBuilderFactory.get("stepForAccountId")
-                .<AccountMaster, ODSTransactionMessage>chunk(20)
+                .<AccountMaster, ODSTransactionMessage>chunk(500)
                 .reader(accountIdentifierReader.reader(cycleCode))
                 .processor(accountIdentifierFiservProcessor)
                 .writer(coBrandCycleWriter)

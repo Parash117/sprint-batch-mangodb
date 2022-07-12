@@ -27,7 +27,7 @@ public class CoBrandCycleChoiceStep {
 
     public Step stepOneForChoice(String cycleCode) {
         return stepBuilderFactory.get("stepOneForChoice")
-                .<AccountMaster, ODSTransactionMessageForChoice>chunk(20)
+                .<AccountMaster, ODSTransactionMessageForChoice>chunk(500)
                 .reader(accountIdentifierReader.reader(cycleCode))
                 .processor(coBrandCycleChoiceProcessor)
                 .writer(coBrandCycleChoiceWriter)

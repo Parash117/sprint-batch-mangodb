@@ -14,7 +14,13 @@ import java.math.BigDecimal;
 public class Bonus{
     private String bonusCode;
 
+    private String bonusRate;
+
     private String choiceCategoryCd;
 
-    private Long pointsEarned;
+    private String partnerMerchantCategoryCode;
+
+    private String partnerMerchantCategoryCodeDesc;
+
+    private Long bonusScore;
 }

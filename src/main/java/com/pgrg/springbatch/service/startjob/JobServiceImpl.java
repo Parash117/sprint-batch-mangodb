@@ -8,6 +8,7 @@ import com.pgrg.springbatch.job.CoBrandCycleChoiceJob;
 import com.pgrg.springbatch.repo.primary.AccountMasterRepo;
 import com.pgrg.springbatch.repo.primary.CutOffRepo;
 import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
+import com.pgrg.springbatch.utils.CustomMessageSource;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -17,10 +18,13 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 
@@ -45,24 +49,27 @@ public class JobServiceImpl implements JobService{
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
 
+    @Autowired
+    private CustomMessageSource messageSource;
+
     @Override
     public void startJobForChoice() throws ParseException {
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
-        SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
+        Date yesterdayDate = new Date(Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli());
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
-            try {
-                return DateUtils.isSameDay(sdf.parse(x.getProcessingDate()), new Date());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }).findAny().orElse(null);
+//            try {
+                return DateUtils.isSameDay((x.getProcessingDate()), yesterdayDate);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//                return false;
+//            }
+        }).findAny().orElseThrow(()-> new RuntimeException( messageSource.getMessage("not.found", messageSource.getMessage("cycledate"))));
 
-        Long dateInLong = sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
+        Long dateInLong = cutOffDateObject.getProcessingDate().getTime(); //sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
         JobParameters Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())
                 .addLong("cutOffDate", dateInLong)
-                .addString("cycleDate", cutOffDateObject.getProcessingDate())
+                .addString("cycleDate", cutOffDateObject.getProcessingDate().toString())
                 .addString("cycleCode", cutOffDateObject.getCycleCode())
                 .toJobParameters();
         try {
@@ -81,21 +88,21 @@ public class JobServiceImpl implements JobService{
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
         SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
-            try {
-                return DateUtils.isSameDay(sdf.parse(x.getProcessingDate()), new Date());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }).findAny().orElse(null);
+//            try {
+                return DateUtils.isSameDay((x.getProcessingDate()), new Date());
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//                return false;
+//            }
+        }).findAny().orElseThrow(()-> new RuntimeException( messageSource.getMessage("not.found", messageSource.getMessage("cycledate"))));
         if(cutOffDateObject == null ){
             throw new RuntimeException("No cycle Date For today");
         }
-        Long dateInLong = sdf.parse(cutOffDateObject.getProcessingDate()).getTime();
+        Long dateInLong = cutOffDateObject.getProcessingDate().getTime();
         JobParameters Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())
                 .addLong("cutOffDate", dateInLong)
-                .addString("cycleDate", cutOffDateObject.getProcessingDate())
+                .addString("cycleDate", cutOffDateObject.getProcessingDate().toString())
                 .addString("cycleCode", cutOffDateObject.getCycleCode())
                 .toJobParameters();
         List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));

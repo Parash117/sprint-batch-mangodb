@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -20,4 +23,14 @@ public class SpringBatchApplication {
 		SpringApplication.run(SpringBatchApplication.class, args);
 	}
 
+	@Bean
+	public MessageSource messageSource() {
+		ReloadableResourceBundleMessageSource messageSource
+				= new ReloadableResourceBundleMessageSource();
+		messageSource.setBasenames(
+				"classpath:/messages"
+		);
+		messageSource.setDefaultEncoding("UTF-8");
+		return messageSource;
+	}
 }

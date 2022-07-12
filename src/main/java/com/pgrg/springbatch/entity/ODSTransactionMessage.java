@@ -2,9 +2,11 @@ package com.pgrg.springbatch.entity;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,6 +36,9 @@ public class ODSTransactionMessage {
     private String cycledForChoice;
 
     private Audit audit = new Audit();
+
+    @Transient
+    private List<Bonus> bonusList;
 
     @Override
     public String toString() {

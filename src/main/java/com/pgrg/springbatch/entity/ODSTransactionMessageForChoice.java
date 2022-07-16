@@ -19,6 +19,8 @@ public class ODSTransactionMessageForChoice {
 
     private String emAccountNumber;
 
+    private Long fdrProductType;
+
     private Long bonusEarn;
 
     private String partnerMerchantCategoryCode;
@@ -28,7 +30,7 @@ public class ODSTransactionMessageForChoice {
     private String processedDate;
 
     private String partnerConfirmationNo;
-
+    @Builder.Default
     private Audit audit = new Audit();
 
     @Transient

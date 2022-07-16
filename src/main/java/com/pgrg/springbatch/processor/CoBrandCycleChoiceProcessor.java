@@ -42,7 +42,11 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
         if(transactionDetailsList != null && transactionDetailsList.size()>0) {
             TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
             Map<String, Long> odsItemSumMap = transactionDetailsList.stream()
-                    .flatMap(x -> x.getBonus().stream()).collect(
+                    .flatMap(x -> {
+                        x.setCycledForPartner("Y");
+                        transactionDetailsRepo.save(x);
+                        return x.getBonus().stream();
+                    }).collect(
                     Collectors.groupingBy(y ->
                                     y.getPartnerMerchantCategoryCode(),
                             Collectors.summingLong(y -> y.getBonusScore())
@@ -61,6 +65,7 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
                     .emAccountNumber(transactionDetails.getEmAccountNumber())
                     .cycleDate(cycleDate)
                     .bonusList(bonusList)
+                    .fdrProductType(item.getProductCode())
                     .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
                     .audit(new Audit())
                     .build();

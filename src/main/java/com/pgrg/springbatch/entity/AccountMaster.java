@@ -16,4 +16,5 @@ public class AccountMaster {
     private String accountIdentifier;
     private String accountId;
     private Long cycleCode99;
+    private Long productCode;
 }

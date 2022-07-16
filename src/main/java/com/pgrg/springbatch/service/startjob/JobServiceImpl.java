@@ -10,6 +10,7 @@ import com.pgrg.springbatch.repo.primary.CutOffRepo;
 import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
 import com.pgrg.springbatch.utils.CustomMessageSource;
 import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
@@ -55,7 +56,9 @@ public class JobServiceImpl implements JobService{
     @Override
     public void startJobForChoice() throws ParseException {
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
+
         Date yesterdayDate = new Date(Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli());
+
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
                 return DateUtils.isSameDay((x.getProcessingDate()), yesterdayDate);
         }).findAny().orElseThrow(()-> new RuntimeException( messageSource.getMessage("not.found", messageSource.getMessage("cycledate"))));
@@ -79,7 +82,7 @@ public class JobServiceImpl implements JobService{
     }
 
     @Override
-    public void startJobForAccountIdentifier() throws ParseException {
+    public JobExecution startJobForAccountIdentifier() throws ParseException {
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
         SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {
@@ -95,10 +98,11 @@ public class JobServiceImpl implements JobService{
                 .addString("cycleDate", cutOffDateObject.getProcessingDate().toString())
                 .addString("cycleCode", cutOffDateObject.getCycleCode())
                 .toJobParameters();
-        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
-        List<TransactionDetails> transactionDetails = transactionDetailsRepo.findAll();
+//        List<AccountMaster> accountMaster = accountMasterRepo.findByCycleCode99(Long.valueOf(cutOffDateObject.getCycleCode()));
+//        List<TransactionDetails> transactionDetails = transactionDetailsRepo.findAll();
+        JobExecution jobExecution = null;
         try {
-            jobLauncher.run(accountIdentifierJob.accountIdJob(cutOffDateObject.getCycleCode()), Parameters);
+            jobExecution = jobLauncher.run(accountIdentifierJob.accountIdJob(cutOffDateObject.getCycleCode()), Parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException
@@ -106,5 +110,6 @@ public class JobServiceImpl implements JobService{
 
             e.printStackTrace();
         }
+        return jobExecution;
     }
 }

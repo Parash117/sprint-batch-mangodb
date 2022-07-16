@@ -27,7 +27,7 @@ public class ODSTransactionMessage {
     private String cycleDate;
 
     private String processedDate;
-
+    @Builder.Default
     private Audit audit = new Audit();
 
 

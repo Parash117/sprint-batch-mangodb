@@ -30,7 +30,6 @@ public class CoBrandCycleChoiceWriter implements ItemWriter<ODSTransactionMessag
     public void write(List<? extends ODSTransactionMessageForChoice> items) throws Exception {
         List<ODSTransactionMessageForChoice> odsItemWriterList = (List<ODSTransactionMessageForChoice>) items;
         List<ODSTransactionMessageForChoice> odsTransactionMessageList = new ArrayList<>();
-
         odsItemWriterList.parallelStream().forEach(x -> {
             x.getBonusList().parallelStream().forEach( y ->
                     odsTransactionMessageList.add(

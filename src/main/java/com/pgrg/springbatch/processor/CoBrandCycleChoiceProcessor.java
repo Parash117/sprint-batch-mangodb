@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,11 +28,13 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
     private String cycleDate;
+    private String jobName;
 
     @BeforeStep
     public void beforeStep(final StepExecution stepExecution) {
         JobParameters jobParameters = stepExecution.getJobParameters();
         cycleDate = jobParameters.getString("cycleDate");
+        jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
     }
 
 
@@ -39,7 +42,7 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
     public ODSTransactionMessageForChoice process(AccountMaster item) throws Exception {
         List<TransactionDetails> transactionDetailsList = transactionDetailsRepo.findTransactionByEmAccountNumberForChoice(item.getAccountIdentifier());
 
-        if(transactionDetailsList != null && transactionDetailsList.size()>0) {
+        if (transactionDetailsList != null && transactionDetailsList.size() > 0) {
             TransactionDetails transactionDetails = transactionDetailsList.stream().findAny().orElse(new TransactionDetails());
             Map<String, Long> odsItemSumMap = transactionDetailsList.stream()
                     .flatMap(x -> {
@@ -47,16 +50,27 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
                         transactionDetailsRepo.save(x);
                         return x.getBonus().stream();
                     }).collect(
-                    Collectors.groupingBy(y ->
-                                    y.getPartnerMerchantCategoryCode(),
-                            Collectors.summingLong(y -> y.getBonusScore())
-                    )
-            );
+                            Collectors.groupingBy(y ->
+                                            y.getPartnerMerchantCategoryCode(),
+                                    Collectors.summingLong(y -> y.getBonusScore())
+                            )
+                    );
 
             List<Bonus> bonusList = new ArrayList<>();
             odsItemSumMap.entrySet().parallelStream().forEach(z -> {
                 bonusList.add(Bonus.builder()
                         .partnerMerchantCategoryCode(z.getKey())
+                        .partnerMerchantCategoryCodeDesc(
+                                transactionDetailsList.stream()
+                                .flatMap(x ->
+                                        x.getBonus().stream()
+                                ).collect(Collectors.toList())
+                                        .stream()
+                                        .filter(x->
+                                                z.getKey().equals(x.getPartnerMerchantCategoryCode())).findAny()
+                                        .orElse(new Bonus())
+                                        .getPartnerMerchantCategoryCodeDesc()
+                        )
                         .bonusScore(z.getValue())
                         .build());
             });
@@ -66,8 +80,8 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
                     .cycleDate(cycleDate)
                     .bonusList(bonusList)
                     .fdrProductType(item.getProductCode())
-                    .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
-                    .audit(new Audit())
+                    .processedDate(null)
+                    .audit(new Audit(jobName))
                     .build();
             return odsTransactionMessage;
         }

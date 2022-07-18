@@ -23,11 +23,14 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
     private String cycleDate;
+    private String jobName;
 
     @BeforeStep
     public void beforeStep(final StepExecution stepExecution) {
         JobParameters jobParameters = stepExecution.getJobParameters();
         cycleDate = jobParameters.getString("cycleDate");
+        jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
+
     }
 
     @Override
@@ -46,8 +49,8 @@ public class AccountIdentifierFiservProcessor implements ItemProcessor<AccountMa
                     .emAccountNumber(transactionDetails.getEmAccountNumber())
                     .cycleDate(cycleDate)
                     .bonusEarn(totalScore)
-                    .audit(new Audit())
-                    .processedDate(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))
+                    .audit(new Audit(jobName))
+                    .processedDate(null)
                     .build();
             return odsTransactionMessage;
         }

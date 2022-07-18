@@ -23,4 +23,9 @@ public class Audit {
     @LastModifiedDate
     private Timestamp modifiedDate;
 
+    private String createdBy;
+
+    public Audit(String createdBy) {
+        this.createdBy = createdBy;
+    }
 }

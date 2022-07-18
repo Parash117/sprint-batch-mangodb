@@ -8,5 +8,5 @@ public interface JobService {
 
     void startJobForChoice() throws ParseException;
 
-    JobExecution startJobForAccountIdentifier() throws ParseException;
+    JobExecution startJobForAccountIdentifier();
 }

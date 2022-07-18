@@ -82,7 +82,7 @@ public class JobServiceImpl implements JobService{
     }
 
     @Override
-    public JobExecution startJobForAccountIdentifier() throws ParseException {
+    public JobExecution startJobForAccountIdentifier(){
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
         SimpleDateFormat sdf =  new SimpleDateFormat("yyyy-MM-dd");
         CutOffDate cutOffDateObject = cutOffDate.stream().filter(x-> {

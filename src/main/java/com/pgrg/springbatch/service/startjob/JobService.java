@@ -6,7 +6,7 @@ import java.text.ParseException;
 
 public interface JobService {
 
-    void startJobForChoice() throws ParseException;
+    JobExecution startJobForChoice() ;
 
     JobExecution startJobForAccountIdentifier();
 }

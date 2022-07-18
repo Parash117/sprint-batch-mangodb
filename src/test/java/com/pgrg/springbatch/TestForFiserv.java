@@ -9,6 +9,7 @@ import com.pgrg.springbatch.repo.primary.CutOffRepo;
 import com.pgrg.springbatch.repo.primary.ODSTransactionMessageFiservRepo;
 import com.pgrg.springbatch.service.startjob.JobServiceImpl;
 import com.pgrg.springbatch.step.AccountIdentifierStep;
+import com.pgrg.springbatch.step.CoBrandCycleChoiceStep;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,6 +59,12 @@ public class TestForFiserv {
 
     @Mock
     private AccountIdentifierStep accountIdentifierStep;
+
+    @Mock
+    private CoBrandCycleChoiceJob coBrandCycleChoiceJob;
+
+    @Mock
+    private CoBrandCycleChoiceStep coBrandCycleChoiceStep;
 
     @InjectMocks
     private JobServiceImpl jobService;
@@ -127,5 +134,44 @@ public class TestForFiserv {
         }
         Assertions.assertEquals(jobExecution, jobExecution1);
     }
+
+    @Test
+    public void choiceJobTest() {
+        JobInstance jobInstance = Mockito.mock(JobInstance.class);
+        JobExecution jobExecution = new JobExecution(jobInstance, 1L, Parameters, "jobFiserv");
+
+        Mockito.when(cutOffRepo.findAll()).thenReturn(cutOffDateList);
+        /*Mockito.when(accountIdentifierJob.accountIdJob("14")).thenReturn( jobBuilderFactory.get("accountIdJob")
+                .incrementer(new RunIdIncrementer())
+                .listener(listener)
+                .start(accountIdentifierStep.stepForAccId("14"))
+                .build() );*/
+        jobLauncher = Mockito.mock(JobLauncher.class);
+        jobService = Mockito.mock(JobServiceImpl.class);
+        RunIdIncrementer runIdIncrementer = Mockito.mock(RunIdIncrementer.class);
+        Job job = Mockito.mock(Job.class);
+        Step step = Mockito.mock(Step.class);
+
+        Mockito.when(coBrandCycleChoiceJob.jobForRawToScoreJob("14")).thenReturn(job);
+        Mockito.when(coBrandCycleChoiceStep.stepOneForChoice("14")).thenReturn(step);
+        try {
+            Mockito.when(jobLauncher.run(coBrandCycleChoiceJob.jobForRawToScoreJob("14"), Parameters)).thenReturn(jobExecution);
+        } catch (JobExecutionAlreadyRunningException
+                | JobRestartException
+                | JobInstanceAlreadyCompleteException
+                | JobParametersInvalidException e) {
+            e.printStackTrace();
+        }
+        Mockito.when(jobService.startJobForChoice()).thenReturn(jobExecution);
+        JobExecution jobExecution1 = null;
+
+        try {
+            jobExecution1 = jobService.startJobForChoice();
+        } catch (Exception e) {
+            System.out.println("error :" + e.getMessage());
+        }
+        Assertions.assertEquals(jobExecution, jobExecution1);
+    }
+
 
 }

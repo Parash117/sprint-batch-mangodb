@@ -1,8 +1,6 @@
 package com.pgrg.springbatch.service.startjob;
 
-import com.pgrg.springbatch.entity.AccountMaster;
 import com.pgrg.springbatch.entity.CutOffDate;
-import com.pgrg.springbatch.entity.TransactionDetails;
 import com.pgrg.springbatch.job.AccountIdentifierJob;
 import com.pgrg.springbatch.job.CoBrandCycleChoiceJob;
 import com.pgrg.springbatch.repo.primary.AccountMasterRepo;
@@ -19,7 +17,6 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -54,7 +51,7 @@ public class JobServiceImpl implements JobService{
     private CustomMessageSource messageSource;
 
     @Override
-    public void startJobForChoice() throws ParseException {
+    public JobExecution startJobForChoice() {
         List<CutOffDate> cutOffDate = cutOffRepo.findAll();
 
         Date yesterdayDate = new Date(Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli());
@@ -70,8 +67,9 @@ public class JobServiceImpl implements JobService{
                 .addString("cycleDate", cutOffDateObject.getProcessingDate().toString())
                 .addString("cycleCode", cutOffDateObject.getCycleCode())
                 .toJobParameters();
+        JobExecution jobExecution = null;
         try {
-            jobLauncher.run(coBrandCycleChoiceJob.jobForRawToScoreJob(cutOffDateObject.getCycleCode()), Parameters);
+            jobExecution = jobLauncher.run(coBrandCycleChoiceJob.jobForRawToScoreJob(cutOffDateObject.getCycleCode()), Parameters);
         } catch (JobExecutionAlreadyRunningException
                 | JobRestartException
                 | JobInstanceAlreadyCompleteException
@@ -79,6 +77,7 @@ public class JobServiceImpl implements JobService{
 
             e.printStackTrace();
         }
+        return jobExecution;
     }
 
     @Override

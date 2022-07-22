@@ -7,6 +7,7 @@ import com.pgrg.springbatch.reader.subreaders.AccountIdentifierReader;
 import com.pgrg.springbatch.writer.CoBrandCycleChoiceWriter;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,12 @@ public class CoBrandCycleChoiceStep {
     private CoBrandCycleChoiceWriter coBrandCycleChoiceWriter;
 
     public Step stepOneForChoice(String cycleCode) {
+//        StepBuilder stepBuilder = new StepBuilder("stepOneForChoice");
+//        return stepBuilder.<AccountMaster, ODSTransactionMessageForChoice>chunk(500)
+//                .reader(accountIdentifierReader.reader(cycleCode))
+//                .processor(coBrandCycleChoiceProcessor)
+//                .writer(coBrandCycleChoiceWriter).build();
+
         return stepBuilderFactory.get("stepOneForChoice")
                 .<AccountMaster, ODSTransactionMessageForChoice>chunk(500)
                 .reader(accountIdentifierReader.reader(cycleCode))

@@ -3,8 +3,10 @@ package com.pgrg.springbatch.processor;
 import com.pgrg.springbatch.entity.*;
 import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,18 +25,24 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Qualifier("coBrand-cycle-processor")
-public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster, ODSTransactionMessageForChoice> {
+public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster, ODSTransactionMessageForChoice>, StepExecutionListener {
 
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
     private String cycleDate;
     private String jobName;
 
-    @BeforeStep
+//    @BeforeStep
+    @Override
     public void beforeStep(final StepExecution stepExecution) {
         JobParameters jobParameters = stepExecution.getJobParameters();
         cycleDate = jobParameters.getString("cycleDate");
         jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
+    }
+
+    @Override
+    public ExitStatus afterStep(StepExecution stepExecution) {
+        return null;
     }
 
 
@@ -75,14 +83,14 @@ public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster,
                         .build());
             });
 
-            ODSTransactionMessageForChoice odsTransactionMessage = ODSTransactionMessageForChoice.builder()
-                    .emAccountNumber(transactionDetails.getEmAccountNumber())
-                    .cycleDate(cycleDate)
-                    .bonusList(bonusList)
-                    .fdrProductType(item.getProductCode())
-                    .processedDate(null)
-                    .audit(new Audit(jobName))
-                    .build();
+                ODSTransactionMessageForChoice odsTransactionMessage = ODSTransactionMessageForChoice.builder()
+                        .emAccountNumber(transactionDetails.getEmAccountNumber())
+                        .cycleDate(cycleDate)
+                        .bonusList(bonusList)
+                        .fdrProductType(item.getProductCode())
+                        .processedDate(null)
+                        .audit(new Audit(jobName))
+                        .build();
             return odsTransactionMessage;
         }
         return null;

@@ -6,6 +6,8 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +21,7 @@ public class CoBrandCycleChoiceJob {
     private JobCompletionListener listener;
 
 //    @Bean
-//    @Qualifier("raw-to-score-job")
+//    @Qualifier("coBrand-job")
     public Job jobForRawToScoreJob(String cycleCode) {
         return jobBuilderFactory.get("coBrandJobForChoice")
                 .incrementer(new RunIdIncrementer())

@@ -32,11 +32,11 @@ public class AccountIdentifierReader{
      * @return
      */
     public MongoItemReader<AccountMaster> reader(String cycleCode) {
-        MongoItemReader<AccountMaster> accountMasterMongoItemReader = new MongoItemReaderBuilder<AccountMaster>()
-                .collection("accountMaster")
-                .name("accountIdentifierReader")
+        MongoItemReader<AccountMaster> accountMasterMongoItemReader = new MongoItemReader<>();
+                accountMasterMongoItemReader.setCollection("accountMaster");
+        accountMasterMongoItemReader.setName("accountIdentifierReader");
 //                .jsonQuery("{\"cycleCode99\": "+Long.valueOf(cycleCode)+" }")
-                .jsonQuery("{ $and: " +
+                accountMasterMongoItemReader.setQuery("{ $and: " +
                         "[ " +
                         "{ $or: [ " +
                         "{'productCode' : 604}, " +
@@ -44,13 +44,13 @@ public class AccountIdentifierReader{
                         "{'productCode' : 606}, " +
                         "{'productCode' : 607} ] " +
                         "}, " +
-                        "{'cycleCode99' : "+Long.valueOf(cycleCode)+"} ] }")
-                .template(mongoTemplate)
-                .sorts(new HashMap<String, Sort.Direction>() {{
+                        "{'cycleCode99' : "+Long.valueOf(cycleCode)+"} ] }");
+                accountMasterMongoItemReader.setTemplate(mongoTemplate);
+                accountMasterMongoItemReader.setSort(new HashMap<String, Sort.Direction>() {{
                     put("_id", Sort.Direction.DESC);
-                }})
-                .targetType(AccountMaster.class)
-                .build();
+                }});
+                accountMasterMongoItemReader.setTargetType(AccountMaster.class);
+                //.build();
         return accountMasterMongoItemReader;
     }
 }

@@ -16,7 +16,9 @@ import com.pgrg.springbatch.repo.secondary.TransactionDetailsRepo;
 import com.pgrg.springbatch.service.startjob.JobServiceImpl;
 import com.pgrg.springbatch.step.AccountIdentifierStep;
 import com.pgrg.springbatch.step.CoBrandCycleChoiceStep;
+import com.pgrg.springbatch.utils.CustomMessageSource;
 import com.pgrg.springbatch.writer.CoBrandCycleChoiceWriter;
+import com.pgrg.springbatch.writer.CoBrandCycleWriter;
 import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -114,6 +116,9 @@ public class TestForFiserv {
     private BaseRepo<ODSTransactionMessageForChoice> baseRepo2;
 
     @Mock
+    private BaseRepo<ODSTransactionMessage> baseRepo;
+
+    @Mock
     private StepBuilderFactory stepBuilderFactory;
 
     @Mock
@@ -133,6 +138,12 @@ public class TestForFiserv {
 
     @InjectMocks
     private CoBrandCycleChoiceWriter coBrandCycleChoiceWriter;
+
+    @InjectMocks
+    private CoBrandCycleWriter coBrandCycleWriter;
+
+    @Autowired
+            private CustomMessageSource customMessageSource;
 
     List<CutOffDate> cutOffDateList = new ArrayList<>();
     JobParameters Parameters = new JobParameters();
@@ -212,16 +223,11 @@ public class TestForFiserv {
     }
 
     @Test
-    public void fiserveJobTest() throws ParseException {
+    public void fiserveJobTest() throws Exception {
         JobInstance jobInstance = Mockito.mock(JobInstance.class);
         JobExecution jobExecution = new JobExecution(jobInstance, 1L, Parameters, "jobFiserv");
-
+        customMessageSource.getMessage("job.start",customMessageSource.getMessage("fiserv"));
         Mockito.when(cutOffRepo.findAll()).thenReturn(cutOffDateList);
-        /*Mockito.when(accountIdentifierJob.accountIdJob("14")).thenReturn( jobBuilderFactory.get("accountIdJob")
-                .incrementer(new RunIdIncrementer())
-                .listener(listener)
-                .start(accountIdentifierStep.stepForAccId("14"))
-                .build() );*/
         jobLauncher = Mockito.mock(JobLauncher.class);
         jobService = Mockito.mock(JobServiceImpl.class);
         RunIdIncrementer runIdIncrementer = Mockito.mock(RunIdIncrementer.class);
@@ -232,6 +238,14 @@ public class TestForFiserv {
         Mockito.when(accountIdentifierJob.accountIdJob("14")).thenReturn(job);
         Mockito.when(accountIdentifierStep.stepForAccId("14")).thenReturn(step);
         MongoItemReader<AccountMaster> mongoItemReader = accountIdentifierReader.reader("14");
+
+        Mockito.when(transactionDetailsRepo.findTransactionByEmAccountNumber(accountMaster.getAccountIdentifier())).thenReturn(transactionDetailsList);
+        ODSTransactionMessage odsTransactionMessage = accountIdentifierFiservProcessor.process(accountMaster);
+
+        List<ODSTransactionMessage> odsTransactionMessageList = new ArrayList<>();
+//        Mockito.when(baseRepo.bulkInsert(odsTransactionMessageList, ODSTransactionMessage.class)).thenReturn(10);
+        coBrandCycleWriter.write(odsTransactionMessageList);
+
         try {
             Mockito.when(jobLauncher.run(accountIdentifierJob.accountIdJob("14"), Parameters)).thenReturn(jobExecution);
         } catch (JobExecutionAlreadyRunningException
@@ -256,6 +270,7 @@ public class TestForFiserv {
     public void choiceJobTest() throws Exception {
         JobInstance jobInstance = Mockito.mock(JobInstance.class);
         JobExecution jobExecution = new JobExecution(jobInstance, 1L, Parameters, "jobFiserv");
+        customMessageSource.getMessage("job.start",customMessageSource.getMessage("choice"));
 
         /*Mockito.when(accountIdentifierJob.accountIdJob("14")).thenReturn( jobBuilderFactory.get("accountIdJob")
                 .incrementer(new RunIdIncrementer())
@@ -284,14 +299,14 @@ public class TestForFiserv {
 
 
         List<ODSTransactionMessageForChoice> odsTransactionMessageList = new ArrayList<>();
-        Mockito.when(baseRepo2.bulkInsert(odsTransactionMessageList, ODSTransactionMessageForChoice.class)).thenReturn(10);
+//        Mockito.when(baseRepo2.bulkInsert(odsTransactionMessageList, ODSTransactionMessageForChoice.class)).thenReturn(10);
         coBrandCycleChoiceWriter.write(odsTransactionMessageForChoiceList);
 
 
 //        accountIdentifierReader = Mockito.mock(AccountIdentifierReader.class);
 //        coBrandCycleChoiceProcessor = Mockito.mock(CoBrandCycleChoiceProcessor.class);
 //        coBrandCycleChoiceWriter = Mockito.mock(CoBrandCycleChoiceWriter.class);
-Mockito.when(stepBuilderFactory.get("asdasdasd")).thenReturn(new StepBuilder("asdasd"));
+//Mockito.when(stepBuilderFactory.get("asdasdasd")).thenReturn(new StepBuilder("asdasd"));
 //        Mockito.when(stepBuilderFactory.get("asdasdasd")
 //                .<AccountMaster, ODSTransactionMessageForChoice>chunk(500)
 //                .reader(accountIdentifierReader.reader("14"))
@@ -306,7 +321,7 @@ Mockito.when(stepBuilderFactory.get("asdasdasd")).thenReturn(new StepBuilder("as
 //                .build());
 
         Mockito.when(reader.reader("14")).thenReturn(new MongoItemReader<AccountMaster>());
-        Mockito.when(coBrandCycleChoiceStep.stepOneForChoice("14")).thenReturn(step);
+//        Mockito.when(coBrandCycleChoiceStep.stepOneForChoice("14")).thenReturn(step);
 
 
         try {

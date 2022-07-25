@@ -1,7 +1,9 @@
 package com.pgrg.springbatch;
 
+import com.mongodb.bulk.BulkWriteResult;
 import com.pgrg.springbatch.config.BatchConfig;
 import com.pgrg.springbatch.dao.BaseRepo;
+import com.pgrg.springbatch.dao.BaseRepoImpl;
 import com.pgrg.springbatch.entity.*;
 import com.pgrg.springbatch.job.AccountIdentifierJob;
 import com.pgrg.springbatch.job.CoBrandCycleChoiceJob;
@@ -44,7 +46,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.BulkOperations;
+import org.springframework.data.mongodb.core.FindAndReplaceOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.data.util.Pair;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -54,6 +62,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -116,6 +125,12 @@ public class TestForFiserv {
     private BaseRepo<ODSTransactionMessageForChoice> baseRepo2;
 
     @Mock
+    private BulkOperations bulkOperations;
+
+    @InjectMocks
+    private BaseRepoImpl<ODSTransactionMessageForChoice> baseRepo2Bean;
+
+    @Mock
     private BaseRepo<ODSTransactionMessage> baseRepo;
 
     @Mock
@@ -142,6 +157,9 @@ public class TestForFiserv {
     @InjectMocks
     private CoBrandCycleWriter coBrandCycleWriter;
 
+    @InjectMocks
+    private JobCompletionListener jobCompletionListener;
+
     @Autowired
             private CustomMessageSource customMessageSource;
 
@@ -165,6 +183,16 @@ public class TestForFiserv {
                 .cycleCode("14")
                 .processingDate(new Date(Instant.now().minus(1, ChronoUnit.DAYS).toEpochMilli()))
                 .year("2022").build());
+        cutOffDateList.get(0).getCycleCode();
+        cutOffDateList.get(0).getProcessingDate();
+        cutOffDateList.get(0).get_id();
+        cutOffDateList.get(0).getMonth();
+        cutOffDateList.get(0).getYear();
+        CutOffDate cutOffDate = new CutOffDate();
+        cutOffDate.set_id("");
+        cutOffDate.setCycleCode("");
+        cutOffDate.setProcessingDate(new Date(new java.util.Date().getTime()));
+        cutOffDate.setYear("");
 
         Parameters = new JobParametersBuilder()
                 .addLong("startAt", System.currentTimeMillis())
@@ -198,12 +226,36 @@ public class TestForFiserv {
                 .transactionPostedDate("Mon Jun 20 12:45:00 NPT 2022")
                 .bonus(bonusList)
                 .build());
+        transactionDetailsList.get(0).getBonus();
+        transactionDetailsList.get(0).getCycledForFiserv();
+        transactionDetailsList.get(0).getEmAccountNumber();
+        transactionDetailsList.get(0).getCycledForPartner();
+        transactionDetailsList.get(0).getMerchantID();
+        transactionDetailsList.get(0).getTransactionAmount();
+        transactionDetailsList.get(0).getTransactionDate();
+        transactionDetailsList.get(0).getTransactionPostedDate();
+        transactionDetailsList.get(0).get_id();
+
+
         accountMaster = AccountMaster.builder()
                 .accountId("4722524033150054")
                 .accountIdentifier("4722524033150054")
                 .cycleCode99(14L)
                 .productCode(5050L)
                 .build();
+
+        accountMaster.set_id("1011100101101010");
+        accountMaster.setAccountId("4722524033150054");
+        accountMaster.setAccountIdentifier("4722524033150054");
+        accountMaster.setCycleCode99(14L);
+        accountMaster.setProductCode(5050L);
+
+        accountMaster.get_id();
+        accountMaster.getAccountId();
+        accountMaster.getAccountIdentifier();
+        accountMaster.getCycleCode99();
+        accountMaster.getProductCode();
+
         odsTransactionMessageForChoiceList.add(ODSTransactionMessageForChoice.builder()
                 .bonusList(bonusList)
                 .processedDate("Mon Jun 20 12:45:00 NPT 2022")
@@ -218,8 +270,67 @@ public class TestForFiserv {
                 .cycleDate("Mon Jun 20 12:45:00 NPT 2022")
                 .emAccountNumber("4722524033150053")
                 .fdrProductType(1L)
+                .audit(new Audit())
                 .bonusEarn(1000L)
                 .build());
+
+        Audit audit = new Audit();
+        audit.setCreatedBy("asdasd");
+        audit.setCreatedDate(new Timestamp(new java.util.Date().getTime()));
+        audit.setModifiedDate(new Timestamp(new java.util.Date().getTime()));
+        audit.getCreatedBy();
+        audit.getCreatedDate();
+        audit.getModifiedDate();
+        Audit.builder().build();
+        audit = new Audit(new Timestamp(new java.util.Date().getTime()),new Timestamp(new java.util.Date().getTime()),"asdasd");
+
+        Bonus bonus = new Bonus();
+        bonus.setBonusCode("asdsad");
+        bonus.setBonusRate("x1");
+        bonus.setChoiceCategoryCd("asdsad");
+        bonus.getBonusScore();
+        bonus.getBonusCode();
+        bonus.getBonusRate();
+        bonus.getChoiceCategoryCd();
+
+        ODSTransactionMessage odsTransactionMessage = new ODSTransactionMessage();
+        odsTransactionMessage.set_id(4545L);
+        odsTransactionMessage.setAudit(audit);
+        odsTransactionMessage.setBonusEarn(45454L);
+        odsTransactionMessage.setCycleDate("2022/03/12");
+        odsTransactionMessage.setEmAccountNumber("1212154554");
+        odsTransactionMessage.setProcessedDate("2022/03/12");
+        odsTransactionMessage.get_id();
+        odsTransactionMessage.getAudit();
+        odsTransactionMessage.getBonusEarn();
+        odsTransactionMessage.getCycleDate();
+        odsTransactionMessage.getFdrProductType();
+        odsTransactionMessage.getEmAccountNumber();
+        odsTransactionMessage.getProcessedDate();
+
+        odsTransactionMessage.equals(odsTransactionMessage);
+
+        ODSTransactionMessageForChoice odsTransactionMessageForChoice = new ODSTransactionMessageForChoice();
+        odsTransactionMessageForChoice.set_id(12121L);
+        odsTransactionMessageForChoice.setAudit(audit);
+        odsTransactionMessageForChoice.setBonusEarn(2121L);
+        odsTransactionMessageForChoice.setCycleDate("2020/20/20");
+        odsTransactionMessageForChoice.setBonusList(bonusList);
+        odsTransactionMessageForChoice.setEmAccountNumber("2121215454");
+        odsTransactionMessageForChoice.setFdrProductType(121L);
+        odsTransactionMessageForChoice.setProcessedDate("2020/20/20");
+        odsTransactionMessageForChoice.setPartnerConfirmationNo("asdsadasd");
+        odsTransactionMessageForChoice.setPartnerMerchantCategoryCode("12121");
+        odsTransactionMessageForChoice.getBonusList();
+        odsTransactionMessageForChoice.getCycleDate();
+        odsTransactionMessageForChoice.getEmAccountNumber();
+        odsTransactionMessageForChoice.getProcessedDate();
+        odsTransactionMessageForChoice.get_id();
+        odsTransactionMessageForChoice.getPartnerConfirmationNo();
+        odsTransactionMessageForChoice.getPartnerMerchantCategoryCode();
+        odsTransactionMessageForChoice.getAudit();
+        odsTransactionMessageForChoice.getFdrProductType();
+        odsTransactionMessageForChoice.getBonusEarn();
     }
 
     @Test
@@ -241,6 +352,12 @@ public class TestForFiserv {
 
         Mockito.when(transactionDetailsRepo.findTransactionByEmAccountNumber(accountMaster.getAccountIdentifier())).thenReturn(transactionDetailsList);
         ODSTransactionMessage odsTransactionMessage = accountIdentifierFiservProcessor.process(accountMaster);
+
+        Mockito.when(stepExecution.getJobParameters()).thenReturn(Parameters);
+        jobInstance = new JobInstance(1L, "choiceJob");
+        jobExecution.setJobInstance(jobInstance);
+        stepExecution = new StepExecution("choiceStepExecution", jobExecution);
+        accountIdentifierFiservProcessor.beforeStep(stepExecution);
 
         List<ODSTransactionMessage> odsTransactionMessageList = new ArrayList<>();
 //        Mockito.when(baseRepo.bulkInsert(odsTransactionMessageList, ODSTransactionMessage.class)).thenReturn(10);
@@ -301,7 +418,7 @@ public class TestForFiserv {
         List<ODSTransactionMessageForChoice> odsTransactionMessageList = new ArrayList<>();
 //        Mockito.when(baseRepo2.bulkInsert(odsTransactionMessageList, ODSTransactionMessageForChoice.class)).thenReturn(10);
         coBrandCycleChoiceWriter.write(odsTransactionMessageForChoiceList);
-
+        jobCompletionListener.afterJob(jobExecution);
 
 //        accountIdentifierReader = Mockito.mock(AccountIdentifierReader.class);
 //        coBrandCycleChoiceProcessor = Mockito.mock(CoBrandCycleChoiceProcessor.class);

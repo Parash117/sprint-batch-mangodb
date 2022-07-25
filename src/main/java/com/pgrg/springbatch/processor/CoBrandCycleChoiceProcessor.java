@@ -25,25 +25,21 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Qualifier("coBrand-cycle-processor")
-public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster, ODSTransactionMessageForChoice>, StepExecutionListener {
+public class CoBrandCycleChoiceProcessor implements ItemProcessor<AccountMaster, ODSTransactionMessageForChoice> {
 
     @Autowired
     private TransactionDetailsRepo transactionDetailsRepo;
     private String cycleDate;
     private String jobName;
 
-//    @BeforeStep
-    @Override
+    @BeforeStep
+//    @Override
     public void beforeStep(final StepExecution stepExecution) {
         JobParameters jobParameters = stepExecution.getJobParameters();
         cycleDate = jobParameters.getString("cycleDate");
         jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
     }
 
-    @Override
-    public ExitStatus afterStep(StepExecution stepExecution) {
-        return null;
-    }
 
 
     @Override

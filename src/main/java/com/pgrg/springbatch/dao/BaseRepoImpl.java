@@ -52,84 +52,84 @@ public class BaseRepoImpl<T> implements BaseRepo<T>{
         }
         return insertedCount;
     }
-    @Override
-    public Pair<Integer, Integer> bulkUpsert(List<T> items, Class type,
-                                             Function<T, Pair<Query, Update>> function) {
-        Integer modifiedCount = 0;
-        Integer insertedCount = 0;
-        List<Pair<Query, Update>> updates = new ArrayList<>(items.size());
-        for (T t : items) {
-            updates.add(function.apply(t));
-        }
-        try {
-            BulkOperations bulkOperations = mongoTemplate
-                    .bulkOps(BulkOperations.BulkMode.UNORDERED, type);
-            BulkWriteResult bulkWriteResult = bulkOperations.upsert(updates).execute();
-            modifiedCount = bulkWriteResult.getModifiedCount();
-            insertedCount = bulkWriteResult.getUpserts().size();
-        } catch (BulkOperationException bulkOperationException) {
-            modifiedCount = bulkOperationException.getResult().getModifiedCount();
-            insertedCount = bulkOperationException.getResult().getUpserts().size();
-            log.error("[{}] BulkOperationException during bulkUpsert: {}", type.getSimpleName(),
-                    bulkOperationException);
-            List<BulkWriteError> bulkWriteErrors = bulkOperationException.getErrors();
-            bulkWriteErrors.forEach(bulkWriteError -> log
-                    .error("{} Upsert Failed record : {} ; reason: {}", type.getSimpleName(),
-                            items.get(bulkWriteError.getIndex()), bulkWriteError.getMessage()));
-        } catch (DuplicateKeyException dke) {
-            if (dke.getCause() instanceof MongoBulkWriteException) {
-                MongoBulkWriteException mwe = (MongoBulkWriteException) dke.getCause();
-                modifiedCount = mwe.getWriteResult().getModifiedCount();
-                insertedCount = mwe.getWriteResult().getUpserts().size();
-                log.info("insertedCount : {}", insertedCount);
-                log.info("modifiedCount : {}", modifiedCount);
-                log.error("[{}] MongoBulkWriteException during bulkUpsert: {}", type.getSimpleName(),
-                        mwe.getMessage(), mwe);
-                List<BulkWriteError> bulkWriteErrors = mwe.getWriteErrors();
-                bulkWriteErrors.forEach(bulkWriteError -> log
-                        .error("{} Upsert Failed for record : {} ; reason: {}", type.getSimpleName(),
-                                items.get(bulkWriteError.getIndex()), bulkWriteError.getMessage()));
-            } else {
-                log.error("[{}] DuplicateKeyException occurred during bulkUpsert : {}",
-                        type.getSimpleName(), dke.getMessage(), dke);
-            }
-        }
-        return Pair.of(insertedCount, modifiedCount);
-    }
-    @Override
-    public Integer deleteAll(Class type) {
-        Integer deletedCount = 0;
-        try {
-            deletedCount = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, type).remove(
-                    new Query()).execute().getDeletedCount();
-        } catch (BulkOperationException bulkOperationException) {
-            log.error("[{}] BulkOperationException during deleteAll: {}", type.getSimpleName(),
-                    bulkOperationException);
-            List<BulkWriteError> bulkWriteErrors = bulkOperationException.getErrors();
-            bulkWriteErrors.forEach(bulkWriteError -> log
-                    .error("{} Delete Failed record : {} ; reason: {}", type.getSimpleName(),
-                            bulkWriteError.getDetails().toJson(), bulkWriteError.getMessage()));
-        }
-        return deletedCount;
-    }
-    @Override
-    public Integer bulkUpdate(List<T> items, Class type, Function<T, Pair<Query, Update>> function) {
-        Integer modifiedCount;
-        List<Pair<Query, Update>> updates = new ArrayList<>(items.size());
-        for (T t : items) {
-            updates.add(function.apply(t));
-        }
-        try {
-            BulkOperations bulkOperations = mongoTemplate
-                    .bulkOps(BulkOperations.BulkMode.UNORDERED, type);
-            BulkWriteResult bulkWriteResult = bulkOperations.updateMulti(updates).execute();
-            modifiedCount = bulkWriteResult.getModifiedCount();
-        } catch (BulkOperationException bulkOperationException) {
-            modifiedCount = bulkOperationException.getResult().getModifiedCount();
-            log.info("modifiedCount : {}", modifiedCount);
-            log.error("[{}] BulkOperationException during update: {}", type.getSimpleName(),
-                    bulkOperationException);
-        }
-        return modifiedCount;
-    }
+//    @Override
+//    public Pair<Integer, Integer> bulkUpsert(List<T> items, Class type,
+//                                             Function<T, Pair<Query, Update>> function) {
+//        Integer modifiedCount = 0;
+//        Integer insertedCount = 0;
+//        List<Pair<Query, Update>> updates = new ArrayList<>(items.size());
+//        for (T t : items) {
+//            updates.add(function.apply(t));
+//        }
+//        try {
+//            BulkOperations bulkOperations = mongoTemplate
+//                    .bulkOps(BulkOperations.BulkMode.UNORDERED, type);
+//            BulkWriteResult bulkWriteResult = bulkOperations.upsert(updates).execute();
+//            modifiedCount = bulkWriteResult.getModifiedCount();
+//            insertedCount = bulkWriteResult.getUpserts().size();
+//        } catch (BulkOperationException bulkOperationException) {
+//            modifiedCount = bulkOperationException.getResult().getModifiedCount();
+//            insertedCount = bulkOperationException.getResult().getUpserts().size();
+//            log.error("[{}] BulkOperationException during bulkUpsert: {}", type.getSimpleName(),
+//                    bulkOperationException);
+//            List<BulkWriteError> bulkWriteErrors = bulkOperationException.getErrors();
+//            bulkWriteErrors.forEach(bulkWriteError -> log
+//                    .error("{} Upsert Failed record : {} ; reason: {}", type.getSimpleName(),
+//                            items.get(bulkWriteError.getIndex()), bulkWriteError.getMessage()));
+//        } catch (DuplicateKeyException dke) {
+//            if (dke.getCause() instanceof MongoBulkWriteException) {
+//                MongoBulkWriteException mwe = (MongoBulkWriteException) dke.getCause();
+//                modifiedCount = mwe.getWriteResult().getModifiedCount();
+//                insertedCount = mwe.getWriteResult().getUpserts().size();
+//                log.info("insertedCount : {}", insertedCount);
+//                log.info("modifiedCount : {}", modifiedCount);
+//                log.error("[{}] MongoBulkWriteException during bulkUpsert: {}", type.getSimpleName(),
+//                        mwe.getMessage(), mwe);
+//                List<BulkWriteError> bulkWriteErrors = mwe.getWriteErrors();
+//                bulkWriteErrors.forEach(bulkWriteError -> log
+//                        .error("{} Upsert Failed for record : {} ; reason: {}", type.getSimpleName(),
+//                                items.get(bulkWriteError.getIndex()), bulkWriteError.getMessage()));
+//            } else {
+//                log.error("[{}] DuplicateKeyException occurred during bulkUpsert : {}",
+//                        type.getSimpleName(), dke.getMessage(), dke);
+//            }
+//        }
+//        return Pair.of(insertedCount, modifiedCount);
+//    }
+//    @Override
+//    public Integer deleteAll(Class type) {
+//        Integer deletedCount = 0;
+//        try {
+//            deletedCount = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, type).remove(
+//                    new Query()).execute().getDeletedCount();
+//        } catch (BulkOperationException bulkOperationException) {
+//            log.error("[{}] BulkOperationException during deleteAll: {}", type.getSimpleName(),
+//                    bulkOperationException);
+//            List<BulkWriteError> bulkWriteErrors = bulkOperationException.getErrors();
+//            bulkWriteErrors.forEach(bulkWriteError -> log
+//                    .error("{} Delete Failed record : {} ; reason: {}", type.getSimpleName(),
+//                            bulkWriteError.getDetails().toJson(), bulkWriteError.getMessage()));
+//        }
+//        return deletedCount;
+//    }
+//    @Override
+//    public Integer bulkUpdate(List<T> items, Class type, Function<T, Pair<Query, Update>> function) {
+//        Integer modifiedCount;
+//        List<Pair<Query, Update>> updates = new ArrayList<>(items.size());
+//        for (T t : items) {
+//            updates.add(function.apply(t));
+//        }
+//        try {
+//            BulkOperations bulkOperations = mongoTemplate
+//                    .bulkOps(BulkOperations.BulkMode.UNORDERED, type);
+//            BulkWriteResult bulkWriteResult = bulkOperations.updateMulti(updates).execute();
+//            modifiedCount = bulkWriteResult.getModifiedCount();
+//        } catch (BulkOperationException bulkOperationException) {
+//            modifiedCount = bulkOperationException.getResult().getModifiedCount();
+//            log.info("modifiedCount : {}", modifiedCount);
+//            log.error("[{}] BulkOperationException during update: {}", type.getSimpleName(),
+//                    bulkOperationException);
+//        }
+//        return modifiedCount;
+//    }
 }
